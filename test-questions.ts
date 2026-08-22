@@ -1,4 +1,4 @@
-import { QuestionGenerator } from './src/game/systems/QuestionGenerator.js';
+import { QuestionGenerator } from './src/game/systems/QuestionGenerator.ts';
 
 function runTests() {
   console.log('Running 1000 Question Generations Across All Grades...');

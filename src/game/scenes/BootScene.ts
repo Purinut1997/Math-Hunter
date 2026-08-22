@@ -12,6 +12,6 @@ export default class BootScene extends Phaser.Scene {
   }
 
   create() {
-    // Wait for user interaction before playing audio
+    this.game.events.emit('math-hunter:assets-ready');
   }
 }

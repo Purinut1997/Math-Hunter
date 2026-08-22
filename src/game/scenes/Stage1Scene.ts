@@ -67,6 +67,7 @@ export default class Stage1Scene extends Phaser.Scene {
 
   private hasSeenBeforeBoss = false;
   private hasSeenBossIntro = false;
+  private dialogueCloseHandlers: Array<() => void> = [];
 
   // Debug
   private debugMode = false;
@@ -133,6 +134,9 @@ export default class Stage1Scene extends Phaser.Scene {
   }
 
   create() {
+    this.removeEventBusListeners();
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.handleSceneShutdown, this);
+
     // --- Map ---
     this.mapImage = this.add.image(0, 0, 'map1').setOrigin(0, 0);
     this.mapW = this.mapImage.width;
@@ -143,13 +147,13 @@ export default class Stage1Scene extends Phaser.Scene {
     // --- Player ---
     const startX = PLAYER_START.nx * this.mapW;
     const startY = PLAYER_START.ny * this.mapH;
-    this.player = this.add.sprite(startX, startY, 'max-idle-right').setDepth(10).setScale(0.14);
+    this.player = this.add.sprite(startX, startY, 'max-idle').setDepth(10).setScale(0.14);
     this.physics.add.existing(this.player);
     const body = this.player.body as Phaser.Physics.Arcade.Body;
     body.setCollideWorldBounds(true);
-    // Adjusted hitbox for 256px v2 frame, keeping it at the feet
-    body.setSize(100, 100);
-    body.setOffset(78, 156); 
+    // Keep the collision body centered at the feet of the 640px source frame.
+    body.setSize(180, 180);
+    body.setOffset(230, 400);
 
     registerMaxAnimations(this);
     this.registerMonsterAnimations();
@@ -210,7 +214,7 @@ export default class Stage1Scene extends Phaser.Scene {
       { speaker: "Max", text: "งั้นเราไปดูกัน!" }
     ]);
 
-    EventBus.once(EVENTS.DIALOGUE_CLOSED, () => {
+    this.onceDialogueClosed(() => {
       this.movementLocked = false;
     });
   }
@@ -268,9 +272,9 @@ export default class Stage1Scene extends Phaser.Scene {
       window.location.reload();
     });
 
-    // 2. Reset Stage
-    createBtn('🔄 เริ่มใหม่', 0xef4444, 90, () => {
-      this.restartStage();
+    // 2. Rescue player position without resetting stage progress
+    createBtn('↩ กลับจุดเริ่ม', 0xd97706, 120, () => {
+      this.returnPlayerToStart();
     });
 
     // 3. Vol Up
@@ -384,31 +388,37 @@ export default class Stage1Scene extends Phaser.Scene {
   }
 
   private registerMonsterAnimations() {
+    const createAnimation = (config: Phaser.Types.Animations.Animation) => {
+      if (!config.key) return;
+      if (this.anims.exists(config.key)) this.anims.remove(config.key);
+      this.anims.create(config);
+    };
+
     // Normal Monsters (except thief_rat which uses 640 pack)
     const monsters = ['number_slime', 'add_beetle', 'stone_golem'];
     for (const m of monsters) {
-      this.anims.create({ key: `${m}-idle`, frames: this.anims.generateFrameNumbers(`${m}_idle`, { start: 0, end: 3 }), frameRate: 5, repeat: -1 });
-      this.anims.create({ key: `${m}-attack`, frames: this.anims.generateFrameNumbers(`${m}_attack`, { start: 0, end: 5 }), frameRate: 10, repeat: 0 });
-      this.anims.create({ key: `${m}-hit`, frames: this.anims.generateFrameNumbers(`${m}_hit`, { start: 0, end: 4 }), frameRate: 9, repeat: 0 });
-      this.anims.create({ key: `${m}-death`, frames: this.anims.generateFrameNumbers(`${m}_death`, { start: 0, end: 5 }), frameRate: 7, repeat: 0 });
+      createAnimation({ key: `${m}-idle`, frames: this.anims.generateFrameNumbers(`${m}_idle`, { start: 0, end: 3 }), frameRate: 5, repeat: -1 });
+      createAnimation({ key: `${m}-attack`, frames: this.anims.generateFrameNumbers(`${m}_attack`, { start: 0, end: 5 }), frameRate: 10, repeat: 0 });
+      createAnimation({ key: `${m}-hit`, frames: this.anims.generateFrameNumbers(`${m}_hit`, { start: 0, end: 4 }), frameRate: 9, repeat: 0 });
+      createAnimation({ key: `${m}-death`, frames: this.anims.generateFrameNumbers(`${m}_death`, { start: 0, end: 5 }), frameRate: 7, repeat: 0 });
     }
 
     // Number Core Fragment
-    this.anims.create({ key: 'number_core_fragment_01-idle', frames: this.anims.generateFrameNumbers('number_core_fragment_01_idle', { start: 0, end: 7 }), frameRate: 8, repeat: -1 });
+    createAnimation({ key: 'number_core_fragment_01-idle', frames: this.anims.generateFrameNumbers('number_core_fragment_01_idle', { start: 0, end: 7 }), frameRate: 8, repeat: -1 });
 
     // Thief Rat animations
     const trId = 'thief_rat';
-    this.anims.create({ key: `${trId}-idle`, frames: this.anims.generateFrameNumbers(`${trId}_idle`, { start: 0, end: 5 }), frameRate: 6, repeat: -1 });
-    this.anims.create({ key: `${trId}-attack`, frames: this.anims.generateFrameNumbers(`${trId}_attack`, { start: 0, end: 7 }), frameRate: 12, repeat: 0 });
-    this.anims.create({ key: `${trId}-hit`, frames: this.anims.generateFrameNumbers(`${trId}_hit`, { start: 0, end: 3 }), frameRate: 12, repeat: 0 });
-    this.anims.create({ key: `${trId}-death`, frames: this.anims.generateFrameNumbers(`${trId}_death`, { start: 0, end: 5 }), frameRate: 8, repeat: 0 });
+    createAnimation({ key: `${trId}-idle`, frames: this.anims.generateFrameNumbers(`${trId}_idle`, { start: 0, end: 5 }), frameRate: 6, repeat: -1 });
+    createAnimation({ key: `${trId}-attack`, frames: this.anims.generateFrameNumbers(`${trId}_attack`, { start: 0, end: 7 }), frameRate: 12, repeat: 0 });
+    createAnimation({ key: `${trId}-hit`, frames: this.anims.generateFrameNumbers(`${trId}_hit`, { start: 0, end: 3 }), frameRate: 12, repeat: 0 });
+    createAnimation({ key: `${trId}-death`, frames: this.anims.generateFrameNumbers(`${trId}_death`, { start: 0, end: 5 }), frameRate: 8, repeat: 0 });
 
     // Boss animations
     const bossId = 'king_slime';
-    this.anims.create({ key: `${bossId}-idle`, frames: this.anims.generateFrameNumbers(`${bossId}_idle`, { start: 0, end: 5 }), frameRate: 6, repeat: -1 });
-    this.anims.create({ key: `${bossId}-attack`, frames: this.anims.generateFrameNumbers(`${bossId}_attack`, { start: 0, end: 7 }), frameRate: 10, repeat: 0 });
-    this.anims.create({ key: `${bossId}-hit`, frames: this.anims.generateFrameNumbers(`${bossId}_hit`, { start: 0, end: 3 }), frameRate: 12, repeat: 0 });
-    this.anims.create({ key: `${bossId}-death`, frames: this.anims.generateFrameNumbers(`${bossId}_death`, { start: 0, end: 5 }), frameRate: 8, repeat: 0 });
+    createAnimation({ key: `${bossId}-idle`, frames: this.anims.generateFrameNumbers(`${bossId}_idle`, { start: 0, end: 5 }), frameRate: 6, repeat: -1 });
+    createAnimation({ key: `${bossId}-attack`, frames: this.anims.generateFrameNumbers(`${bossId}_attack`, { start: 0, end: 7 }), frameRate: 10, repeat: 0 });
+    createAnimation({ key: `${bossId}-hit`, frames: this.anims.generateFrameNumbers(`${bossId}_hit`, { start: 0, end: 3 }), frameRate: 12, repeat: 0 });
+    createAnimation({ key: `${bossId}-death`, frames: this.anims.generateFrameNumbers(`${bossId}_death`, { start: 0, end: 5 }), frameRate: 8, repeat: 0 });
   }
 
   private spawnMonsters() {
@@ -442,7 +452,7 @@ export default class Stage1Scene extends Phaser.Scene {
           { speaker: "Max", text: "งั้นก็เอามันกลับคืนมา!" }
         ]);
         
-        EventBus.once(EVENTS.DIALOGUE_CLOSED, () => {
+        this.onceDialogueClosed(() => {
           this.movementLocked = false;
         });
       }
@@ -512,7 +522,7 @@ export default class Stage1Scene extends Phaser.Scene {
       EventBus.emit(EVENTS.SHOW_DIALOGUE, [
         { speaker: "Neo", text: "ตอบให้ถูก\nแล้วพลังของคำตอบจะกลายเป็นการโจมตี!" }
       ]);
-      EventBus.once(EVENTS.DIALOGUE_CLOSED, () => {
+      this.onceDialogueClosed(() => {
         this.doStartEncounterCombat(monster);
       });
     } else {
@@ -547,10 +557,10 @@ export default class Stage1Scene extends Phaser.Scene {
       .setDepth(2000);
       
     // VS Player (Left)
-    this.vsPlayer = this.add.sprite(cw * 0.25, ch * 0.55, 'max-idle-right')
+    this.vsPlayer = this.add.sprite(cw * 0.25, ch * 0.55, 'max-idle')
       .setScrollFactor(0)
       .setDepth(2001)
-      .setScale(0.8);
+      .setScale(0.32);
     this.vsPlayer.play('max-idle-right');
 
     const vsMonsterScale = monster.config.monsterId === 'king_slime' ? 1 : 0.8;
@@ -567,7 +577,7 @@ export default class Stage1Scene extends Phaser.Scene {
         { speaker: "Neo", text: "ระวัง!\nเจ้าตัวนี้ไม่เหมือนพวกก่อนหน้า" },
         { speaker: "Neo", text: "เรามีเวลาจำกัดในการหาคำตอบ!" }
       ]);
-      EventBus.once(EVENTS.DIALOGUE_CLOSED, () => {
+      this.onceDialogueClosed(() => {
         this.triggerBossCombat(monster, cw, ch);
       });
     } else if (monster.config.monsterId === 'king_slime') {
@@ -763,7 +773,7 @@ export default class Stage1Scene extends Phaser.Scene {
         { speaker: "Neo", text: "ฉันไม่รู้...\nแต่ดูเหมือนว่าเขากำลังจับตาดูเราอยู่" }
       ]);
 
-      EventBus.once(EVENTS.DIALOGUE_CLOSED, () => {
+      this.onceDialogueClosed(() => {
         // Absorb the loot
         this.tweens.add({
           targets: loot,
@@ -774,7 +784,12 @@ export default class Stage1Scene extends Phaser.Scene {
             loot.destroy();
             this.movementLocked = false;
             this.currentMonsterIndex++;
-            EventBus.emit(EVENTS.SHOW_STAGE_CLEAR);
+            EventBus.emit(EVENTS.SHOW_STAGE_CLEAR, {
+              stage: 1,
+              title: 'หมู่บ้านบวกไว',
+              fragmentText: '◆ 1 / 3',
+              message: 'หมู่บ้านปลอดภัยแล้ว!',
+            });
           }
         });
       });
@@ -948,11 +963,21 @@ export default class Stage1Scene extends Phaser.Scene {
   }
 
   public restartStage() {
+    this.time.removeAllEvents();
+    this.tweens.killAll();
+    this.clearDialogueCloseHandlers();
+    EventBus.emit(EVENTS.HIDE_DIALOGUE);
+    EventBus.emit(EVENTS.HIDE_COMBAT_UI);
     this.currentMonsterIndex = 0;
     this.inCombat = false;
+    this.isIntroPlaying = false;
     this.portalActive = false;
     this.movementLocked = false;
     this.endVSCombat();
+    if (this.lordZeroImage) {
+      this.lordZeroImage.destroy();
+      this.lordZeroImage = null;
+    }
     this.player.setPosition(PLAYER_START.nx * this.mapW, PLAYER_START.ny * this.mapH);
     this.player.play('max-idle-right');
     
@@ -962,10 +987,59 @@ export default class Stage1Scene extends Phaser.Scene {
     this.spawnMonsters();
   }
 
-  destroy() {
+  private returnPlayerToStart() {
+    if (!this.player?.active || this.inCombat || this.isIntroPlaying) return;
+
+    const startX = PLAYER_START.nx * this.mapW;
+    const startY = PLAYER_START.ny * this.mapH;
+    const body = this.player.body as Phaser.Physics.Arcade.Body;
+
+    body.reset(startX, startY);
+    body.setVelocity(0, 0);
+    this.joystickPointer = undefined;
+    this.joystickVec.x = 0;
+    this.joystickVec.y = 0;
+    this.playerDir = 'right';
+    this.player.setFlipX(false);
+    this.player.play('max-idle-right');
+
+    this.showFloatingText(
+      this.cameras.main.width / 2,
+      this.cameras.main.height / 2,
+      'กลับสู่จุดเริ่มต้นแล้ว',
+      '#64ffda',
+      32,
+    );
+  }
+
+  private onceDialogueClosed(handler: () => void) {
+    const wrapped = () => {
+      this.dialogueCloseHandlers = this.dialogueCloseHandlers.filter(item => item !== wrapped);
+      handler();
+    };
+    this.dialogueCloseHandlers.push(wrapped);
+    EventBus.once(EVENTS.DIALOGUE_CLOSED, wrapped, this);
+  }
+
+  private clearDialogueCloseHandlers() {
+    for (const handler of this.dialogueCloseHandlers) {
+      EventBus.off(EVENTS.DIALOGUE_CLOSED, handler, this);
+    }
+    this.dialogueCloseHandlers = [];
+  }
+
+  private removeEventBusListeners() {
     EventBus.off(EVENTS.ANSWER_SELECTED, this.handleAnswerSelected, this);
     EventBus.off(EVENTS.COMBAT_TIMEOUT, this.handleCombatTimeout, this);
     EventBus.off(EVENTS.RESTART_STAGE, this.restartStage, this);
     EventBus.off(EVENTS.DIALOGUE_LINE_CHANGED, this.handleDialogueLineChanged, this);
+    this.clearDialogueCloseHandlers();
+  }
+
+  private handleSceneShutdown() {
+    this.removeEventBusListeners();
+    this.combatManager?.endEncounter();
+    EventBus.emit(EVENTS.HIDE_DIALOGUE);
+    EventBus.emit(EVENTS.HIDE_COMBAT_UI);
   }
 }

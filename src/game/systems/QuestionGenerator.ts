@@ -14,7 +14,9 @@ export class QuestionGenerator {
   static generate(params: { grade: number, difficulty: Difficulty, topic?: string }): MathQuestion {
     let attempts = 0;
     while (attempts < 50) {
-      const q = this.createQuestionForGrade(params.grade, params.difficulty);
+      const q = params.topic === 'subtraction'
+        ? this.generateSubtraction(params.grade, params.difficulty)
+        : this.createQuestionForGrade(params.grade, params.difficulty);
       if (this.validateQuestion(q)) {
         this.addRecentQuestion(q.id);
         return q;
@@ -23,9 +25,53 @@ export class QuestionGenerator {
     }
     
     // Fallback if somehow failed
-    const fallback = this.createQuestionForGrade(params.grade, params.difficulty);
+    const fallback = params.topic === 'subtraction'
+      ? this.generateSubtraction(params.grade, params.difficulty)
+      : this.createQuestionForGrade(params.grade, params.difficulty);
     this.addRecentQuestion(fallback.id);
     return fallback;
+  }
+
+  private static generateSubtraction(grade: number, difficulty: Difficulty): MathQuestion {
+    if (grade >= 5) {
+      const precision = grade >= 6 || difficulty !== 'easy' ? 2 : 1;
+      const factor = 10 ** precision;
+      const range = difficulty === 'easy' ? 100 : difficulty === 'normal' ? 1000 : 10000;
+      let a = Math.floor(Math.random() * range * factor) + factor;
+      let b = Math.floor(Math.random() * range * factor) + 1;
+      if (a < b) [a, b] = [b, a];
+      const correct = ((a - b) / factor).toFixed(precision);
+      const choices = new Set<string>([correct]);
+      for (const offset of [1, -1, 10, -10, 100, -100]) {
+        if (choices.size >= 4) break;
+        const candidate = a - b + offset;
+        if (candidate >= 0) choices.add((candidate / factor).toFixed(precision));
+      }
+      while (choices.size < 4) {
+        const candidate = Math.max(0, a - b + Math.floor(Math.random() * 19) - 9);
+        choices.add((candidate / factor).toFixed(precision));
+      }
+      return {
+        id: `sub:g${grade}:${a}:${b}:${precision}`,
+        question: `${(a / factor).toFixed(precision)} − ${(b / factor).toFixed(precision)} = ?`,
+        correctAnswer: correct,
+        choices: this.shuffleArray(Array.from(choices)),
+      };
+    }
+
+    const max = grade === 3
+      ? (difficulty === 'easy' ? 100 : difficulty === 'normal' ? 500 : 1000)
+      : (difficulty === 'easy' ? 1000 : difficulty === 'normal' ? 10000 : 100000);
+    let a = Math.floor(Math.random() * max) + 1;
+    let b = Math.floor(Math.random() * max) + 1;
+    if (a < b) [a, b] = [b, a];
+    const correct = a - b;
+    return {
+      id: `sub:g${grade}:${a}:${b}`,
+      question: `${a} − ${b} = ?`,
+      correctAnswer: correct,
+      choices: this.generateNumberDistractors(correct, [1, -1, 10, -10, 100, -100]),
+    };
   }
 
   private static createQuestionForGrade(grade: number, difficulty: Difficulty): MathQuestion {

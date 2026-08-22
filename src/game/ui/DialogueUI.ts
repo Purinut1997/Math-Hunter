@@ -12,6 +12,7 @@ export class DialogueUI {
   
   constructor() {
     this.handleShow = this.handleShow.bind(this);
+    this.handleHide = this.handleHide.bind(this);
   }
 
   mount() {
@@ -39,10 +40,12 @@ export class DialogueUI {
     });
 
     EventBus.on(EVENTS.SHOW_DIALOGUE, this.handleShow);
+    EventBus.on(EVENTS.HIDE_DIALOGUE, this.handleHide);
   }
 
   unmount() {
     EventBus.off(EVENTS.SHOW_DIALOGUE, this.handleShow);
+    EventBus.off(EVENTS.HIDE_DIALOGUE, this.handleHide);
 
     if (this.element) {
       this.element.remove();
@@ -58,6 +61,12 @@ export class DialogueUI {
       this.element.style.display = 'flex';
       this.renderCurrentLine();
     }
+  }
+
+  private handleHide() {
+    this.currentLines = [];
+    this.currentLineIndex = 0;
+    if (this.element) this.element.style.display = 'none';
   }
 
   private advance() {

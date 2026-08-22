@@ -10,6 +10,7 @@ export const EVENTS = {
   UPDATE_COMBAT_STATE: 'update_combat_state',
   // Dialogue & Story
   SHOW_DIALOGUE: 'show_dialogue',
+  HIDE_DIALOGUE: 'hide_dialogue',
   DIALOGUE_LINE_CHANGED: 'dialogue_line_changed',
   DIALOGUE_CLOSED: 'dialogue_closed',
   SHOW_STAGE_CLEAR: 'show_stage_clear',

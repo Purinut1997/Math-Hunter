@@ -9,7 +9,7 @@ import { CombatUI } from './game/ui/CombatUI';
 import { DeveloperCredit } from './game/ui/DeveloperCredit';
 import { DialogueUI } from './game/ui/DialogueUI';
 import { StageClearUI } from './game/ui/StageClearUI';
-import './style.css';
+import { EventBus, EVENTS } from './game/EventBus';
 
 // Initialize Phaser Game
 const game = new MathHunterGame();
@@ -40,7 +40,26 @@ if (uiLayer) {
 const mainMenu = new MainMenuScene();
 const gradeSelection = new GradeSelectionScene();
 
-let currentGrade: GradeLevel = 3;
+let currentGrade: GradeLevel = saveSystem.loadGrade();
+let audioSettings = saveSystem.loadAudioSettings();
+let activeStage = 0;
+
+function applyAudioSettings(settings = audioSettings) {
+  audioSettings = settings;
+  saveSystem.saveAudioSettings(settings.bgmVolume, settings.sfxVolume);
+  game.sound.volume = settings.bgmVolume / 100;
+}
+
+function playBgmWhenReady() {
+  const play = () => {
+    if (game.cache.audio.exists('bgm') && !game.sound.get('bgm')) {
+      game.sound.play('bgm', { loop: true, volume: 1 });
+    }
+  };
+
+  if (game.cache.audio.exists('bgm')) play();
+  else game.events.once('math-hunter:assets-ready', play);
+}
 
 // ===========================
 // NAVIGATION
@@ -52,14 +71,11 @@ function showMainMenu() {
   mainMenu.mount(
     () => showGradeSelection(),
     () => {
-      const lastStage = saveSystem.loadProgress();
-      console.log('เล่นต่อ → Stage', lastStage);
-      startStage1();
+      startStage(saveSystem.loadProgress());
     },
-    () => {
-      console.log('เลือกด่าน');
-      startStage1();
-    }
+    (stage) => startStage(stage),
+    audioSettings,
+    applyAudioSettings,
   );
 }
 
@@ -69,11 +85,16 @@ function showGradeSelection() {
   gradeSelection.mount(
     (grade: GradeLevel) => {
       currentGrade = grade;
-      localStorage.setItem('math_hunter_grade', String(grade));
+      saveSystem.saveGrade(grade);
       startStage1();
     },
     () => showMainMenu()
   );
+}
+
+function startStage(stage: number) {
+  if (stage === 2) startStage2();
+  else startStage1();
 }
 
 function startStage1() {
@@ -94,39 +115,57 @@ function startStage1() {
   }
 
   // Play BGM if not playing
-  try {
-    if (!game.sound.get('bgm')) {
-      game.sound.play('bgm', { loop: true, volume: 0.5 });
-    }
-  } catch (e) {
-    console.warn("Could not play BGM", e);
-  }
+  applyAudioSettings();
+  playBgmWhenReady();
+  saveSystem.saveProgress(1);
+  activeStage = 1;
 
   console.log(`Stage 1 started | Grade: ป.${currentGrade}`);
 }
 
-import { EventBus, EVENTS } from './game/EventBus';
+function startStage2() {
+  gradeSelection.unmount();
+  mainMenu.unmount();
+  combatUI.mount();
+  dialogueUI.mount();
+  stageClearUI.mount();
+
+  const stage1 = game.scene.getScene('Stage1Scene');
+  if (stage1 && game.scene.isActive('Stage1Scene')) stage1.scene.stop();
+
+  const stage2 = game.scene.getScene('Stage2Scene') as import('./game/scenes/Stage2Scene').default;
+  if (stage2 && !game.scene.isActive('Stage2Scene')) game.scene.start('Stage2Scene', { grade: currentGrade });
+  else if (stage2) stage2.restartStage();
+
+  applyAudioSettings();
+  playBgmWhenReady();
+  saveSystem.saveProgress(2);
+  activeStage = 2;
+  console.log(`Stage 2 started | Grade: ป.${currentGrade}`);
+}
 
 EventBus.on(EVENTS.STAGE_CLEARED, (action: 'next' | 'select') => {
   const stage1 = game.scene.getScene('Stage1Scene') as import('./game/scenes/Stage1Scene').default;
   if (stage1) {
     stage1.scene.stop();
   }
+  const stage2 = game.scene.getScene('Stage2Scene') as import('./game/scenes/Stage2Scene').default;
+  if (stage2) stage2.scene.stop();
 
-  saveSystem.saveProgress(2); // Unlock Stage 2 (hypothetical)
-  
   // Reset Stage Clear UI
   stageClearUI.unmount();
   
-  if (action === 'select') {
-    showMainMenu();
-  } else {
-    // For now, Next Stage just restarts Stage 1 as Stage 2 is not implemented
-    startStage1();
-  }
+  if (action === 'next' && activeStage === 1) startStage2();
+  else showMainMenu();
+});
+
+EventBus.on(EVENTS.SHOW_STAGE_CLEAR, (data?: { stage?: number }) => {
+  if ((data?.stage ?? activeStage) === 1) saveSystem.saveProgress(2);
+  else saveSystem.saveProgress(2);
 });
 
 // Boot
 showMainMenu();
+applyAudioSettings();
 
 console.log('MATH HUNTER initialized', game);

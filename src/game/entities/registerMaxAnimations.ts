@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 
 /**
- * MAX — 6 Sprite Sheets (640x640px)
+ * MAX — 6 Sprite Sheets, 640px cells in a single horizontal row.
  * Source: max_ready_pack
  *
  * Spritesheet format:
@@ -49,4 +49,3 @@ export function registerMaxAnimations(scene: Phaser.Scene) {
     });
   }
 }
-

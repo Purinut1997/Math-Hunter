@@ -1,7 +1,13 @@
 export class MainMenuScene {
   private element: HTMLElement | null = null;
 
-  mount(onStart: () => void, onContinue: () => void, onSelectStage: () => void) {
+  mount(
+    onStart: () => void,
+    onContinue: () => void,
+    onSelectStage: (stage: number) => void,
+    audioSettings: { bgmVolume: number; sfxVolume: number },
+    onAudioSettingsChange: (settings: { bgmVolume: number; sfxVolume: number }) => void,
+  ) {
     // Remove any existing menu
     this.unmount();
 
@@ -58,10 +64,6 @@ export class MainMenuScene {
             </div>
           </div>
 
-          <!-- Developer Credit (bottom-left) -->
-          <div class="main-menu__credit">
-            <img src="assets/branding/developed-by-purinut.png" alt="Developed by Purinut"/>
-          </div>
         </div>
 
         <!-- Tutorial Modal -->
@@ -73,7 +75,7 @@ export class MainMenuScene {
               <p><strong>📱 การควบคุม (มือถือ):</strong> สัมผัสที่ครึ่งซ้ายของหน้าจอเพื่อใช้ Virtual Joystick บังคับตัวละคร</p>
               <br/>
               <p><strong>⚔️ การต่อสู้:</strong> เดินไปชนมอนสเตอร์เพื่อเข้าฉากต่อสู้ ระบบจะมีโจทย์คณิตศาสตร์ให้คิดเลข</p>
-              <p><strong>⏱️ เวลาจำกัด:</strong> รีบเลือกคำตอบที่ถูกต้องก่อนที่เวลาจะหมด (ดูจากหลอดเวลา)</p>
+              <p><strong>⏱️ ศึกบอส:</strong> การต่อสู้กับบอสมีเวลาจำกัด ให้เลือกคำตอบก่อนหลอดเวลาหมด</p>
               <p><strong>❤️ พลังชีวิต:</strong> หากตอบผิดหรือหมดเวลา พลังชีวิตจะลดลง หากหมดเกมจะจบลงทันที</p>
             </div>
             <button id="btn-tutorial-close" class="game-btn game-btn--primary">เข้าใจแล้ว!</button>
@@ -86,10 +88,10 @@ export class MainMenuScene {
             <h2 class="game-modal__title">⚙️ ตั้งค่า</h2>
             <div class="game-modal__content">
               <label class="game-modal__label">เสียงเพลง
-                <input type="range" min="0" max="100" value="80" class="game-modal__slider"/>
+                <input id="settings-bgm-volume" type="range" min="0" max="100" value="${audioSettings.bgmVolume}" class="game-modal__slider"/>
               </label>
               <label class="game-modal__label">เสียงเอฟเฟกต์
-                <input type="range" min="0" max="100" value="100" class="game-modal__slider"/>
+                <input id="settings-sfx-volume" type="range" min="0" max="100" value="${audioSettings.sfxVolume}" class="game-modal__slider"/>
               </label>
             </div>
             <button id="btn-settings-close" class="game-btn game-btn--primary">ปิด</button>
@@ -103,10 +105,22 @@ export class MainMenuScene {
             <div class="game-modal__content game-modal__credits">
               <img src="assets/branding/developed-by-purinut.png" alt="Developed by Purinut" class="credits-badge"/>
               <p>เกมนี้สร้างสรรค์โดย<br/><strong style="font-size: 1.2em; color: #fbbf24;">นายภูริณัฐ กุลัพบุรี</strong></p>
-              <p style="margin-top: 10px; font-size: 0.9em;">ช่องทางติดต่อ<br/><a href="https://mediaplatform.pages.dev/" target="_blank" style="color: #60a5fa; text-decoration: underline;">https://mediaplatform.pages.dev/</a></p>
-              <p class="credits-tech" style="margin-top: 15px;">Engine: Phaser 3 · TypeScript · Vite</p>
+              <p style="margin-top: 10px; font-size: 0.9em;">ช่องทางติดต่อ<br/><a href="https://mediaplatform.pages.dev/" target="_blank" rel="noopener noreferrer" style="color: #60a5fa; text-decoration: underline;">https://mediaplatform.pages.dev/</a></p>
             </div>
             <button id="btn-credits-close" class="game-btn game-btn--primary">ปิด</button>
+          </div>
+        </div>
+
+        <!-- Stage Selection Modal -->
+        <div id="stage-select-modal" class="game-modal" style="display:none">
+          <div class="game-modal__box">
+            <h2 class="game-modal__title">🗺️ เลือกด่าน</h2>
+            <div class="game-modal__content stage-select-list">
+              <button id="btn-stage-1" class="game-btn game-btn--primary">ด่าน 1 · หมู่บ้านบวกไว</button>
+              <button id="btn-stage-2" class="game-btn game-btn--primary">ด่าน 2 · ป่าลบเลือน</button>
+              <button class="game-btn game-btn--secondary" disabled>🔒 ด่าน 3 · ยังไม่เปิดเผย</button>
+            </div>
+            <button id="btn-stage-select-close" class="game-btn game-btn--secondary">ปิด</button>
           </div>
         </div>
       </div>
@@ -118,7 +132,16 @@ export class MainMenuScene {
     // Bind events
     document.getElementById('btn-start')?.addEventListener('click', onStart);
     document.getElementById('btn-continue')?.addEventListener('click', onContinue);
-    document.getElementById('btn-select-stage')?.addEventListener('click', onSelectStage);
+    document.getElementById('btn-select-stage')?.addEventListener('click', () => {
+      const modal = document.getElementById('stage-select-modal');
+      if (modal) modal.style.display = 'flex';
+    });
+    document.getElementById('btn-stage-1')?.addEventListener('click', () => onSelectStage(1));
+    document.getElementById('btn-stage-2')?.addEventListener('click', () => onSelectStage(2));
+    document.getElementById('btn-stage-select-close')?.addEventListener('click', () => {
+      const modal = document.getElementById('stage-select-modal');
+      if (modal) modal.style.display = 'none';
+    });
 
     document.getElementById('btn-tutorial')?.addEventListener('click', () => {
       const modal = document.getElementById('tutorial-modal');
@@ -138,6 +161,17 @@ export class MainMenuScene {
       if (modal) modal.style.display = 'none';
     });
 
+    const bgmSlider = document.getElementById('settings-bgm-volume') as HTMLInputElement | null;
+    const sfxSlider = document.getElementById('settings-sfx-volume') as HTMLInputElement | null;
+    const updateAudioSettings = () => {
+      onAudioSettingsChange({
+        bgmVolume: Number(bgmSlider?.value ?? audioSettings.bgmVolume),
+        sfxVolume: Number(sfxSlider?.value ?? audioSettings.sfxVolume),
+      });
+    };
+    bgmSlider?.addEventListener('input', updateAudioSettings);
+    sfxSlider?.addEventListener('input', updateAudioSettings);
+
     document.getElementById('btn-credits')?.addEventListener('click', () => {
       const modal = document.getElementById('credits-modal');
       if (modal) modal.style.display = 'flex';
@@ -152,6 +186,9 @@ export class MainMenuScene {
       if (e.target === e.currentTarget) (e.currentTarget as HTMLElement).style.display = 'none';
     });
     document.getElementById('credits-modal')?.addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) (e.currentTarget as HTMLElement).style.display = 'none';
+    });
+    document.getElementById('stage-select-modal')?.addEventListener('click', (e) => {
       if (e.target === e.currentTarget) (e.currentTarget as HTMLElement).style.display = 'none';
     });
   }

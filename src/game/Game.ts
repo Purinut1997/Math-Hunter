@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import BootScene from './scenes/BootScene';
 import Stage1Scene from './scenes/Stage1Scene';
+import Stage2Scene from './scenes/Stage2Scene';
 
 export const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
@@ -19,7 +20,7 @@ export const config: Phaser.Types.Core.GameConfig = {
       debug: false,
     },
   },
-  scene: [BootScene, Stage1Scene],
+  scene: [BootScene, Stage1Scene, Stage2Scene],
 };
 
 export class MathHunterGame extends Phaser.Game {

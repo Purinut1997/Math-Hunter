@@ -1,12 +1,14 @@
 {
-  "name": "-",
+  "name": "math-hunter",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:questions": "node --experimental-strip-types test-questions.ts",
+    "check": "npm run test:questions && npm run build"
   },
   "devDependencies": {
     "typescript": "~6.0.2",

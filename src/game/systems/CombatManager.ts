@@ -23,11 +23,14 @@ export class CombatManager {
   private state: CombatState;
   private currentEncounter: EncounterConfig | null = null;
   private grade: number;
+  private topic: 'mixed' | 'subtraction';
   private timerInterval: ReturnType<typeof setInterval> | null = null;
+  private timerStartDelay: ReturnType<typeof setTimeout> | null = null;
   private bossQuestionCount: number = 0;
 
-  constructor(grade: number) {
+  constructor(grade: number, topic: 'mixed' | 'subtraction' = 'mixed') {
     this.grade = grade;
+    this.topic = topic;
     this.state = {
       isActive: false,
       playerHp: 5,
@@ -55,7 +58,7 @@ export class CombatManager {
     this.state.monsterMaxHp = encounter.maxHp;
     this.state.isInputDisabled = false;
     this.state.correctAnswerWas = null;
-    this.state.isBoss = encounter.monsterId === 'king_slime';
+    this.state.isBoss = encounter.monsterId === 'king_slime' || encounter.monsterId === 'void_stag';
     this.state.isTimeUp = false;
     this.state.timeRemaining = null;
     this.state.maxTime = null;
@@ -167,7 +170,7 @@ export class CombatManager {
 
     let newQuestion = QuestionGenerator.generate({
       grade: this.grade,
-      topic: 'addition',
+      topic: this.topic,
       difficulty: difficulty
     });
 
@@ -191,7 +194,8 @@ export class CombatManager {
     this.state.timeRemaining = timeLimit;
     
     // Delay timer start by 1.5s to account for UI fade in
-    setTimeout(() => {
+    this.timerStartDelay = setTimeout(() => {
+      this.timerStartDelay = null;
       if (!this.state.isActive || this.state.isInputDisabled) return;
       this.timerInterval = setInterval(() => {
         if (this.state.timeRemaining !== null && this.state.timeRemaining > 0) {
@@ -207,6 +211,10 @@ export class CombatManager {
   }
 
   private stopTimer() {
+    if (this.timerStartDelay) {
+      clearTimeout(this.timerStartDelay);
+      this.timerStartDelay = null;
+    }
     if (this.timerInterval) {
       clearInterval(this.timerInterval);
       this.timerInterval = null;
