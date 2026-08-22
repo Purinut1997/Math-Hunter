@@ -1,0 +1,86 @@
+{
+  "character": "Max",
+  "format": "6 separate spritesheets",
+  "frameWidth": 256,
+  "frameHeight": 256,
+  "directionRowOrder": [
+    "down",
+    "left",
+    "right",
+    "up"
+  ],
+  "actions": {
+    "idle": {
+      "asset": "max_idle_256.png",
+      "framesPerDirection": 8,
+      "frameRate": 7,
+      "repeat": -1,
+      "rowOrder": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ]
+    },
+    "walk": {
+      "asset": "max_walk_256.png",
+      "framesPerDirection": 8,
+      "frameRate": 10,
+      "repeat": -1,
+      "rowOrder": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ]
+    },
+    "attack": {
+      "asset": "max_attack_256.png",
+      "framesPerDirection": 8,
+      "frameRate": 12,
+      "repeat": 0,
+      "rowOrder": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ]
+    },
+    "hit": {
+      "asset": "max_hit_256.png",
+      "framesPerDirection": 6,
+      "frameRate": 10,
+      "repeat": 0,
+      "rowOrder": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ]
+    },
+    "death": {
+      "asset": "max_death_256.png",
+      "framesPerDirection": 8,
+      "frameRate": 8,
+      "repeat": 0,
+      "rowOrder": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ]
+    },
+    "dash": {
+      "asset": "max_dash_256.png",
+      "framesPerDirection": 8,
+      "frameRate": 15,
+      "repeat": 0,
+      "rowOrder": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ]
+    }
+  }
+}

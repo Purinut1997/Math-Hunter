@@ -1,0 +1,502 @@
+{
+  "name": "king_slime_ready_pack",
+  "format": "png_rgba",
+  "animations": {
+    "idle": {
+      "sheet": "sheets/king_slime_idle.png",
+      "frame_count": 6,
+      "sheet_size": {
+        "w": 2172,
+        "h": 724
+      },
+      "cell_size": {
+        "w": 362,
+        "h": 724
+      },
+      "fps": 6,
+      "loop": true,
+      "frames": [
+        {
+          "file": "frames/idle/idle_00.png",
+          "index": 0,
+          "x": 0,
+          "y": 0,
+          "w": 362,
+          "h": 724
+        },
+        {
+          "file": "frames/idle/idle_01.png",
+          "index": 1,
+          "x": 362,
+          "y": 0,
+          "w": 362,
+          "h": 724
+        },
+        {
+          "file": "frames/idle/idle_02.png",
+          "index": 2,
+          "x": 724,
+          "y": 0,
+          "w": 362,
+          "h": 724
+        },
+        {
+          "file": "frames/idle/idle_03.png",
+          "index": 3,
+          "x": 1086,
+          "y": 0,
+          "w": 362,
+          "h": 724
+        },
+        {
+          "file": "frames/idle/idle_04.png",
+          "index": 4,
+          "x": 1448,
+          "y": 0,
+          "w": 362,
+          "h": 724
+        },
+        {
+          "file": "frames/idle/idle_05.png",
+          "index": 5,
+          "x": 1810,
+          "y": 0,
+          "w": 362,
+          "h": 724
+        }
+      ]
+    },
+    "walk": {
+      "sheet": "sheets/king_slime_walk.png",
+      "frame_count": 8,
+      "sheet_size": {
+        "w": 2172,
+        "h": 724
+      },
+      "cell_size": {
+        "w": 271,
+        "h": 724
+      },
+      "fps": 8,
+      "loop": true,
+      "frames": [
+        {
+          "file": "frames/walk/walk_00.png",
+          "index": 0,
+          "x": 0,
+          "y": 0,
+          "w": 271,
+          "h": 724
+        },
+        {
+          "file": "frames/walk/walk_01.png",
+          "index": 1,
+          "x": 271,
+          "y": 0,
+          "w": 271,
+          "h": 724
+        },
+        {
+          "file": "frames/walk/walk_02.png",
+          "index": 2,
+          "x": 542,
+          "y": 0,
+          "w": 271,
+          "h": 724
+        },
+        {
+          "file": "frames/walk/walk_03.png",
+          "index": 3,
+          "x": 813,
+          "y": 0,
+          "w": 271,
+          "h": 724
+        },
+        {
+          "file": "frames/walk/walk_04.png",
+          "index": 4,
+          "x": 1084,
+          "y": 0,
+          "w": 271,
+          "h": 724
+        },
+        {
+          "file": "frames/walk/walk_05.png",
+          "index": 5,
+          "x": 1355,
+          "y": 0,
+          "w": 271,
+          "h": 724
+        },
+        {
+          "file": "frames/walk/walk_06.png",
+          "index": 6,
+          "x": 1626,
+          "y": 0,
+          "w": 271,
+          "h": 724
+        },
+        {
+          "file": "frames/walk/walk_07.png",
+          "index": 7,
+          "x": 1897,
+          "y": 0,
+          "w": 275,
+          "h": 724
+        }
+      ]
+    },
+    "attack": {
+      "sheet": "sheets/king_slime_attack.png",
+      "frame_count": 8,
+      "sheet_size": {
+        "w": 2172,
+        "h": 724
+      },
+      "cell_size": {
+        "w": 271,
+        "h": 724
+      },
+      "fps": 10,
+      "loop": false,
+      "frames": [
+        {
+          "file": "frames/attack/attack_00.png",
+          "index": 0,
+          "x": 0,
+          "y": 0,
+          "w": 271,
+          "h": 724
+        },
+        {
+          "file": "frames/attack/attack_01.png",
+          "index": 1,
+          "x": 271,
+          "y": 0,
+          "w": 271,
+          "h": 724
+        },
+        {
+          "file": "frames/attack/attack_02.png",
+          "index": 2,
+          "x": 542,
+          "y": 0,
+          "w": 271,
+          "h": 724
+        },
+        {
+          "file": "frames/attack/attack_03.png",
+          "index": 3,
+          "x": 813,
+          "y": 0,
+          "w": 271,
+          "h": 724
+        },
+        {
+          "file": "frames/attack/attack_04.png",
+          "index": 4,
+          "x": 1084,
+          "y": 0,
+          "w": 271,
+          "h": 724
+        },
+        {
+          "file": "frames/attack/attack_05.png",
+          "index": 5,
+          "x": 1355,
+          "y": 0,
+          "w": 271,
+          "h": 724
+        },
+        {
+          "file": "frames/attack/attack_06.png",
+          "index": 6,
+          "x": 1626,
+          "y": 0,
+          "w": 271,
+          "h": 724
+        },
+        {
+          "file": "frames/attack/attack_07.png",
+          "index": 7,
+          "x": 1897,
+          "y": 0,
+          "w": 275,
+          "h": 724
+        }
+      ]
+    },
+    "hit": {
+      "sheet": "sheets/king_slime_hit.png",
+      "frame_count": 4,
+      "sheet_size": {
+        "w": 2172,
+        "h": 724
+      },
+      "cell_size": {
+        "w": 543,
+        "h": 724
+      },
+      "fps": 12,
+      "loop": false,
+      "frames": [
+        {
+          "file": "frames/hit/hit_00.png",
+          "index": 0,
+          "x": 0,
+          "y": 0,
+          "w": 543,
+          "h": 724
+        },
+        {
+          "file": "frames/hit/hit_01.png",
+          "index": 1,
+          "x": 543,
+          "y": 0,
+          "w": 543,
+          "h": 724
+        },
+        {
+          "file": "frames/hit/hit_02.png",
+          "index": 2,
+          "x": 1086,
+          "y": 0,
+          "w": 543,
+          "h": 724
+        },
+        {
+          "file": "frames/hit/hit_03.png",
+          "index": 3,
+          "x": 1629,
+          "y": 0,
+          "w": 543,
+          "h": 724
+        }
+      ]
+    },
+    "death": {
+      "sheet": "sheets/king_slime_death.png",
+      "frame_count": 6,
+      "sheet_size": {
+        "w": 2172,
+        "h": 724
+      },
+      "cell_size": {
+        "w": 362,
+        "h": 724
+      },
+      "fps": 8,
+      "loop": false,
+      "frames": [
+        {
+          "file": "frames/death/death_00.png",
+          "index": 0,
+          "x": 0,
+          "y": 0,
+          "w": 362,
+          "h": 724
+        },
+        {
+          "file": "frames/death/death_01.png",
+          "index": 1,
+          "x": 362,
+          "y": 0,
+          "w": 362,
+          "h": 724
+        },
+        {
+          "file": "frames/death/death_02.png",
+          "index": 2,
+          "x": 724,
+          "y": 0,
+          "w": 362,
+          "h": 724
+        },
+        {
+          "file": "frames/death/death_03.png",
+          "index": 3,
+          "x": 1086,
+          "y": 0,
+          "w": 362,
+          "h": 724
+        },
+        {
+          "file": "frames/death/death_04.png",
+          "index": 4,
+          "x": 1448,
+          "y": 0,
+          "w": 362,
+          "h": 724
+        },
+        {
+          "file": "frames/death/death_05.png",
+          "index": 5,
+          "x": 1810,
+          "y": 0,
+          "w": 362,
+          "h": 724
+        }
+      ]
+    },
+    "dash": {
+      "sheet": "sheets/king_slime_dash.png",
+      "frame_count": 6,
+      "sheet_size": {
+        "w": 2172,
+        "h": 724
+      },
+      "cell_size": {
+        "w": 362,
+        "h": 724
+      },
+      "fps": 12,
+      "loop": false,
+      "frames": [
+        {
+          "file": "frames/dash/dash_00.png",
+          "index": 0,
+          "x": 0,
+          "y": 0,
+          "w": 362,
+          "h": 724
+        },
+        {
+          "file": "frames/dash/dash_01.png",
+          "index": 1,
+          "x": 362,
+          "y": 0,
+          "w": 362,
+          "h": 724
+        },
+        {
+          "file": "frames/dash/dash_02.png",
+          "index": 2,
+          "x": 724,
+          "y": 0,
+          "w": 362,
+          "h": 724
+        },
+        {
+          "file": "frames/dash/dash_03.png",
+          "index": 3,
+          "x": 1086,
+          "y": 0,
+          "w": 362,
+          "h": 724
+        },
+        {
+          "file": "frames/dash/dash_04.png",
+          "index": 4,
+          "x": 1448,
+          "y": 0,
+          "w": 362,
+          "h": 724
+        },
+        {
+          "file": "frames/dash/dash_05.png",
+          "index": 5,
+          "x": 1810,
+          "y": 0,
+          "w": 362,
+          "h": 724
+        }
+      ]
+    },
+    "vfx": {
+      "sheet": "sheets/king_slime_vfx.png",
+      "frame_count": 10,
+      "sheet_size": {
+        "w": 2172,
+        "h": 724
+      },
+      "cell_size": {
+        "w": 217,
+        "h": 724
+      },
+      "fps": 12,
+      "loop": false,
+      "frames": [
+        {
+          "file": "frames/vfx/vfx_00.png",
+          "index": 0,
+          "x": 0,
+          "y": 0,
+          "w": 217,
+          "h": 724
+        },
+        {
+          "file": "frames/vfx/vfx_01.png",
+          "index": 1,
+          "x": 217,
+          "y": 0,
+          "w": 217,
+          "h": 724
+        },
+        {
+          "file": "frames/vfx/vfx_02.png",
+          "index": 2,
+          "x": 434,
+          "y": 0,
+          "w": 217,
+          "h": 724
+        },
+        {
+          "file": "frames/vfx/vfx_03.png",
+          "index": 3,
+          "x": 651,
+          "y": 0,
+          "w": 217,
+          "h": 724
+        },
+        {
+          "file": "frames/vfx/vfx_04.png",
+          "index": 4,
+          "x": 868,
+          "y": 0,
+          "w": 217,
+          "h": 724
+        },
+        {
+          "file": "frames/vfx/vfx_05.png",
+          "index": 5,
+          "x": 1085,
+          "y": 0,
+          "w": 217,
+          "h": 724
+        },
+        {
+          "file": "frames/vfx/vfx_06.png",
+          "index": 6,
+          "x": 1302,
+          "y": 0,
+          "w": 217,
+          "h": 724
+        },
+        {
+          "file": "frames/vfx/vfx_07.png",
+          "index": 7,
+          "x": 1519,
+          "y": 0,
+          "w": 217,
+          "h": 724
+        },
+        {
+          "file": "frames/vfx/vfx_08.png",
+          "index": 8,
+          "x": 1736,
+          "y": 0,
+          "w": 217,
+          "h": 724
+        },
+        {
+          "file": "frames/vfx/vfx_09.png",
+          "index": 9,
+          "x": 1953,
+          "y": 0,
+          "w": 219,
+          "h": 724
+        }
+      ]
+    }
+  }
+}

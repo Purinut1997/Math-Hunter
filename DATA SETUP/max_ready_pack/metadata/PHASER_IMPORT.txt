@@ -1,0 +1,5 @@
+MAX — Phaser Import Guide
+Use sheets_640/*.png as spritesheet with:
+frameWidth: 640
+frameHeight: 640
+or use metadata/phaser_*.json for frame references.

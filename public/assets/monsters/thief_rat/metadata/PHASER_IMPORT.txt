@@ -1,0 +1,5 @@
+THIEF_RAT — Phaser
+ใช้ sheets_640/*.png แบบ spritesheet:
+frameWidth: 640
+frameHeight: 640
+หรือใช้ metadata/phaser_*.json หากต้องการอ้างอิง frame name.

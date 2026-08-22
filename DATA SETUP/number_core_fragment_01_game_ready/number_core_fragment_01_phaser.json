@@ -1,0 +1,22 @@
+{
+  "asset": "Number Core Fragment #1",
+  "frameWidth": 256,
+  "frameHeight": 256,
+  "animations": {
+    "fragment-01-idle": {
+      "asset": "number_core_fragment_01_idle.png",
+      "frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "frameRate": 8,
+      "repeat": -1
+    }
+  }
+}

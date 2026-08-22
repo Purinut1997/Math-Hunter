@@ -1,0 +1,859 @@
+TASK:
+
+เพิ่ม Normal Monster และ Combat System
+ให้ Stage 1
+
+MATH HUNTER
+ศึกพิชิตแก่นพลังตัวเลข
+
+Stage:
+
+ด่าน 1
+หมู่บ้านบวกไว
+
+ฉันได้แนบ Game-Ready Monster Assets:
+
+1. Number Slime
+2. Add Beetle
+3. Thief Rat
+4. Stone Golem
+
+ใช้ Sprite Sheet
+ที่อยู่ใน ZIP โดยตรง
+
+IMPORTANT:
+
+ห้ามสร้าง Monster ใหม่
+
+ห้ามใช้:
+
+- Circle
+- Rectangle
+- Emoji
+- Placeholder
+- CSS Shape
+
+ต้องใช้ Monster Assets ที่ฉันแนบ
+
+==================================================
+CORE COMBAT RULE
+==================================================
+
+เกมนี้ไม่มี:
+
+XP
+Level
+Coin
+Attack Stat
+Defense Stat
+Skill Tree
+Equipment
+
+Player มี:
+
+MAX HP = 5
+
+Correct Streak
+
+กฎ:
+
+ตอบถูก
+→ Monster HP -1
+→ Correct Streak +1
+
+ตอบผิด
+→ Player HP -1
+→ Correct Streak = 0
+
+ตอบถูกติดต่อกัน 3 ครั้ง:
+
+→ Player HP +1
+→ HP ห้ามเกิน 5
+→ Correct Streak = 0
+
+==================================================
+STAGE 1 ENCOUNTERS
+==================================================
+
+Stage 1 มี Normal Monster 10 ตัว
+
+Monster Model สามารถซ้ำกันได้
+
+ใช้ Distribution นี้เป็นค่าเริ่มต้น:
+
+--------------------------------
+ENCOUNTER 01
+--------------------------------
+
+Number Slime
+
+HP = 1
+
+Question Difficulty:
+Easy
+
+--------------------------------
+ENCOUNTER 02
+--------------------------------
+
+Number Slime
+
+HP = 1
+
+Question Difficulty:
+Easy
+
+--------------------------------
+ENCOUNTER 03
+--------------------------------
+
+Add Beetle
+
+HP = 1
+
+Question Difficulty:
+Easy
+
+--------------------------------
+ENCOUNTER 04
+--------------------------------
+
+Thief Rat
+
+HP = 1
+
+Question Difficulty:
+Easy / Normal
+
+--------------------------------
+ENCOUNTER 05
+--------------------------------
+
+Number Slime
+
+HP = 2
+
+Question Difficulty:
+Easy / Normal
+
+--------------------------------
+ENCOUNTER 06
+--------------------------------
+
+Add Beetle
+
+HP = 2
+
+Question Difficulty:
+Normal
+
+--------------------------------
+ENCOUNTER 07
+--------------------------------
+
+Thief Rat
+
+HP = 2
+
+Question Difficulty:
+Easy / Normal
+
+--------------------------------
+ENCOUNTER 08
+--------------------------------
+
+Stone Golem
+
+HP = 2
+
+Question Difficulty:
+Normal
+
+--------------------------------
+ENCOUNTER 09
+--------------------------------
+
+Add Beetle
+
+HP = 2
+
+Question Difficulty:
+Normal
+
+--------------------------------
+ENCOUNTER 10
+--------------------------------
+
+Stone Golem
+
+HP = 2
+
+Question Difficulty:
+Normal
+
+==================================================
+IMPORTANT — MONSTER REUSE
+==================================================
+
+Monster Model สามารถซ้ำได้
+
+เช่น:
+
+Number Slime
+สามารถปรากฏหลายครั้ง
+
+Add Beetle
+สามารถปรากฏหลายครั้ง
+
+แต่:
+
+Monster Model
+และ Question
+ต้องเป็นคนละระบบ
+
+ห้ามผูก Monster กับโจทย์ตายตัว
+
+ตัวอย่าง:
+
+Number Slime E01
+อาจได้:
+
+12 + 7
+
+Number Slime E05
+อาจได้:
+
+26 + 18
+
+และเมื่อ Restart Stage:
+
+Number Slime E01
+ต้องสามารถได้โจทย์ใหม่อีกครั้ง
+
+==================================================
+QUESTION TOPIC
+==================================================
+
+Stage 1 Topic:
+
+ADDITION
+
+ทุก Encounter ใช้:
+
+QuestionGenerator.generate({
+  grade,
+  topic: "addition",
+  difficulty
+})
+
+ห้ามสร้าง Question Array
+แบบ Fixed Question Bank
+
+==================================================
+NORMAL MONSTER TIMER
+==================================================
+
+Normal Monster:
+
+ไม่มี Countdown Timer
+
+Player มีเวลาคิดได้ตามต้องการ
+
+เฉพาะ Boss เท่านั้น
+ที่มี Countdown
+
+==================================================
+ENCOUNTER START
+==================================================
+
+เมื่อ Player เข้า Active Encounter Trigger:
+
+1. Lock Player Movement
+
+2. Face Player toward Monster
+
+3. Monster เล่น Idle Animation
+
+4. แสดง Combat UI
+
+5. Generate Question ใหม่
+
+6. แสดง Answer Choices 4 ตัว
+
+==================================================
+CORRECT ANSWER FLOW
+==================================================
+
+เมื่อ Player ตอบถูก:
+
+1. Disable Answer Input ชั่วคราว
+
+2. Player เล่น Attack Animation
+
+3. Monster เล่น Hit Animation
+
+4. Monster HP -1
+
+5. Correct Streak +1
+
+6. Update UI
+
+ถ้า:
+
+Correct Streak >= 3
+
+ให้:
+
+Player HP +1
+
+แต่:
+
+Player HP <= Player Max HP
+
+แล้ว:
+
+Correct Streak = 0
+
+แสดง Effect:
+
+HEAL +1
+
+ถ้า HP เต็ม:
+
+แสดง:
+
+MAX HP
+
+แต่ยัง Reset Streak = 0
+
+==================================================
+MONSTER SURVIVES
+==================================================
+
+ถ้า:
+
+Monster HP > 0
+
+หลัง Hit Animation:
+
+Generate Question ใหม่ทันที
+
+Question ใหม่ต้อง:
+
+- ไม่ใช่ข้อเดิม
+- สุ่ม Answer Position ใหม่
+- Validate ก่อนแสดง
+
+แล้ว Enable Answer Input
+
+==================================================
+MONSTER DEFEATED
+==================================================
+
+ถ้า:
+
+Monster HP <= 0
+
+ให้:
+
+1. เล่น Monster Death Animation
+
+2. Disable Monster Collision
+
+3. Hide Combat UI
+
+4. Encounter.completed = true
+
+5. Unlock Progress Gate
+
+6. Activate Next Encounter
+
+7. Return Player Movement
+
+8. Monster ห้ามเกิดซ้ำใน Run ปัจจุบัน
+
+==================================================
+WRONG ANSWER FLOW
+==================================================
+
+เมื่อ Player ตอบผิด:
+
+1. Disable Answer Input
+
+2. Correct Streak = 0
+
+3. Monster เล่น Attack Animation
+
+4. Player เล่น Hit Animation
+   ถ้ามี Asset
+   ถ้ายังไม่มีให้ใช้ Damage Flash ชั่วคราว
+   แต่ห้ามเปลี่ยนตัว Player เป็น Placeholder
+
+5. Player HP -1
+
+6. Update HP UI
+
+7. แสดงคำตอบที่ถูกต้อง
+ประมาณ 1–1.5 วินาที
+
+8. Generate Question ใหม่
+
+ห้ามให้ Player ตอบโจทย์เดิมซ้ำทันที
+
+==================================================
+PLAYER HP
+==================================================
+
+Player Max HP:
+
+5
+
+เริ่ม Stage:
+
+❤️❤️❤️❤️❤️
+
+ตอบผิด:
+
+ลด 1
+
+ตัวอย่าง:
+
+❤️❤️❤️❤️♡
+
+==================================================
+CORRECT STREAK UI
+==================================================
+
+แสดง:
+
+○ ○ ○
+
+ตอบถูก 1:
+
+● ○ ○
+
+ตอบถูก 2:
+
+● ● ○
+
+ตอบถูก 3:
+
+● ● ●
+
+จากนั้น:
+
+HEAL +1 ❤️
+
+แล้ว Reset:
+
+○ ○ ○
+
+ตอบผิดระหว่าง Streak:
+
+Reset ทันที
+
+==================================================
+MONSTER HP UI
+==================================================
+
+Monster 1 HP:
+
+♥
+
+Monster 2 HP:
+
+♥♥
+
+หรือใช้ HP Bar แบบสั้น
+
+Monster Name
+ต้องแสดงด้วย
+
+ตัวอย่าง:
+
+NUMBER SLIME
+
+♥ ♥
+
+==================================================
+COMBAT UI
+==================================================
+
+Combat UI ต้องประกอบด้วย:
+
+Player HP
+
+Monster Name
+
+Monster HP
+
+Correct Streak
+
+Question
+
+4 Answer Choices
+
+==================================================
+QUESTION UI
+==================================================
+
+Question ต้องอ่านง่ายมาก
+
+Answer Choices:
+
+4 ตัว
+
+Desktop:
+
+กด Mouse
+หรือ Keyboard ได้
+
+Mobile:
+
+แตะได้
+
+Touch Target:
+
+อย่างน้อย 48px
+
+==================================================
+ANSWER POSITION
+==================================================
+
+ตำแหน่งคำตอบถูก
+ต้อง Shuffle ทุกข้อ
+
+ห้าม:
+
+Correct Answer อยู่ปุ่มเดิมตลอด
+
+==================================================
+MONSTER ANIMATIONS
+==================================================
+
+ใช้ Animation จาก ZIP
+
+สำหรับแต่ละ Monster:
+
+Idle
+
+Attack
+
+Hit
+
+Death
+
+โหลด Sprite Sheets จาก Assets
+
+สร้าง Animation Key
+ไม่ให้ชนกัน
+
+ตัวอย่าง:
+
+number-slime-idle
+number-slime-attack
+number-slime-hit
+number-slime-death
+
+add-beetle-idle
+...
+
+thief-rat-idle
+...
+
+stone-golem-idle
+...
+
+==================================================
+MONSTER SCALE
+==================================================
+
+ขนาด Monster ต้องเหมาะกับ Map
+
+อย่า Render ที่ 256px เต็มโดยอัตโนมัติ
+
+ปรับ Display Scale
+ให้ดูเหมาะกับ Player
+
+Stone Golem
+ควรใหญ่กว่าตัวอื่นเล็กน้อย
+
+ตัวอย่างแนวคิด:
+
+Number Slime
+small
+
+Add Beetle
+small-medium
+
+Thief Rat
+medium
+
+Stone Golem
+medium-large
+
+อย่าให้ Monster ใหญ่จนบดบัง Map
+
+==================================================
+MONSTER POSITION
+==================================================
+
+Monster ต้องอยู่บริเวณ
+Encounter Trigger ที่กำหนดใน Stage 1
+
+อย่าสุ่ม Spawn ทั่ว Map
+
+แต่สามารถปรับตำแหน่งภายใน Encounter Area
+เล็กน้อยเพื่อให้ดูเป็นธรรมชาติ
+
+==================================================
+MONSTER IDLE STATE
+==================================================
+
+Monster ที่ยังไม่ Active:
+
+สามารถแสดงอยู่ใน Map ได้
+
+แต่:
+
+ไม่เริ่ม Combat
+จน Encounter ก่อนหน้าสำเร็จ
+
+หรือเลือกซ่อน Monster ไว้จน Active
+ก็ได้ถ้าเหมาะกับ Flow
+
+Prefer:
+
+ให้เห็น Monster ล่วงหน้า
+เพื่อให้ผู้เล่นรู้ว่ากำลังเดินไปหาอะไร
+
+==================================================
+PROGRESSION RULE
+==================================================
+
+Player ต้องต่อสู้ตามลำดับ:
+
+E01
+↓
+E02
+↓
+E03
+↓
+E04
+↓
+E05
+↓
+E06
+↓
+E07
+↓
+E08
+↓
+E09
+↓
+E10
+
+ห้ามข้าม Encounter
+
+เมื่อ E10 Defeated:
+
+Boss Gate Unlock
+
+แต่:
+
+ยังไม่ Spawn King Slime
+จน Boss Prompt ถูกสร้าง
+
+==================================================
+GAME OVER
+==================================================
+
+ถ้า:
+
+Player HP <= 0
+
+หยุด Combat ทันที
+
+หยุด Input
+
+แสดง Overlay:
+
+GAME OVER
+
+พลังของ Math Hunter หมดลง...
+
+[ ลองอีกครั้ง ]
+
+==================================================
+RESTART STAGE
+==================================================
+
+กด:
+
+ลองอีกครั้ง
+
+ให้:
+
+Restart Stage 1
+
+Reset:
+
+Player HP = 5
+
+Correct Streak = 0
+
+E01-E10 = incomplete
+
+Monster HP ทุกตัว Reset
+
+Progress Gates Reset
+
+Boss Gate Reset
+
+Player Spawn กลับ START
+
+Combat UI Reset
+
+==================================================
+IMPORTANT — QUESTION RESET
+==================================================
+
+Restart Stage:
+
+ห้าม Reuse Question Sequence เดิม
+
+Question Generator
+ต้องสร้างโจทย์ชุดใหม่
+
+recentQuestions
+สามารถ Reset หรือเก็บบางส่วนได้
+
+แต่ต้องป้องกันการเห็นชุดเดิมทันที
+
+==================================================
+DIFFICULTY CURVE
+==================================================
+
+Stage 1:
+
+E01-E03
+Easy
+
+E04-E06
+Easy / Normal
+
+E07-E10
+Normal เป็นหลัก
+
+อย่าสร้าง Hard Questions
+ใน Normal Monster ของ Stage 1
+เว้นแต่ระบบ Grade/Design ในอนาคตกำหนดใหม่
+
+==================================================
+AUDIO HOOKS
+==================================================
+
+เตรียม Hook สำหรับ:
+
+monster_attack
+
+monster_hit
+
+monster_death
+
+player_attack
+
+player_hurt
+
+correct_answer
+
+wrong_answer
+
+heal
+
+แต่ถ้ายังไม่มี Audio Asset
+ห้ามให้เกม Error
+
+ระบบ Audio Missing
+ต้อง Fail Gracefully
+
+==================================================
+COMBAT CAMERA EFFECT
+==================================================
+
+ใช้ Game Feel เบา ๆ
+
+Correct:
+
+เล็กน้อย:
+- Hit Flash
+- Small Camera Shake
+
+Wrong:
+
+Monster Attack
++ Small Camera Shake
+
+Death:
+
+Particle / Fade
+
+ห้ามใช้ Camera Shake รุนแรง
+
+==================================================
+VALIDATION
+==================================================
+
+ก่อนบอกว่างานเสร็จ:
+
+Playtest Stage 1 จริง
+
+ตรวจ:
+
+1. มี Monster 10 Encounter
+
+2. Model ซ้ำได้ถูกต้อง
+
+3. E01-E10 ทำงานตามลำดับ
+
+4. Player ข้าม Encounter ไม่ได้
+
+5. ตอบถูก:
+Monster -1 HP
+
+6. ตอบผิด:
+Player -1 HP
+
+7. Correct 3 ครั้ง:
+Heal +1
+
+8. HP ไม่เกิน 5
+
+9. Normal Monster ไม่มี Timer
+
+10. Monster Death เปิดทางจริง
+
+11. E10 เปิด Boss Gate
+
+12. Restart Reset Monster ทั้งหมด
+
+13. Restart ได้โจทย์ใหม่
+
+14. Sprite Sheet ทุกตัวเล่นได้
+
+15. ไม่มี Placeholder
+
+16. ไม่มี Console Error
+
+17. Desktop ใช้งานได้
+
+18. Mobile Landscape ใช้งานได้
+
+IMPORTANT:
+
+อย่าเพิ่ม King Slime ในงานนี้
+
+King Slime Boss
+จะถูกสร้างใน Prompt ถัดไป
+หลัง Normal Monster System
+ทำงานสมบูรณ์แล้ว

@@ -1,0 +1,960 @@
+{
+  "name": "thief_rat",
+  "version": "1.0",
+  "canvas_640": {
+    "width": 640,
+    "height": 640,
+    "recommended_pivot": {
+      "x": 0.5,
+      "y": 0.921875
+    }
+  },
+  "animations": {
+    "idle": {
+      "frame_count": 6,
+      "fps": 6,
+      "loop": true,
+      "sheet": "sheets_640/thief_rat_idle_640.png",
+      "frame_size": {
+        "w": 640,
+        "h": 640
+      },
+      "frames": [
+        {
+          "index": 0,
+          "hd_file": "frames_hd/idle/thief_rat_idle_00.png",
+          "normalized_file": "frames_640/idle/thief_rat_idle_00.png",
+          "alpha_safe_file": "frames_640_alpha_safe/idle/thief_rat_idle_00.png",
+          "source_bbox": {
+            "x": 0,
+            "y": 147,
+            "w": 364,
+            "h": 457
+          },
+          "normalized_placement": {
+            "scale": 0.962800875273523,
+            "x": 145,
+            "y": 150,
+            "w": 350,
+            "h": 440,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        },
+        {
+          "index": 1,
+          "hd_file": "frames_hd/idle/thief_rat_idle_01.png",
+          "normalized_file": "frames_640/idle/thief_rat_idle_01.png",
+          "alpha_safe_file": "frames_640_alpha_safe/idle/thief_rat_idle_01.png",
+          "source_bbox": {
+            "x": 355,
+            "y": 149,
+            "w": 385,
+            "h": 456
+          },
+          "normalized_placement": {
+            "scale": 0.9649122807017544,
+            "x": 134,
+            "y": 150,
+            "w": 371,
+            "h": 440,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        },
+        {
+          "index": 2,
+          "hd_file": "frames_hd/idle/thief_rat_idle_02.png",
+          "normalized_file": "frames_640/idle/thief_rat_idle_02.png",
+          "alpha_safe_file": "frames_640_alpha_safe/idle/thief_rat_idle_02.png",
+          "source_bbox": {
+            "x": 709,
+            "y": 155,
+            "w": 401,
+            "h": 450
+          },
+          "normalized_placement": {
+            "scale": 0.9777777777777777,
+            "x": 124,
+            "y": 150,
+            "w": 392,
+            "h": 440,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        },
+        {
+          "index": 3,
+          "hd_file": "frames_hd/idle/thief_rat_idle_03.png",
+          "normalized_file": "frames_640/idle/thief_rat_idle_03.png",
+          "alpha_safe_file": "frames_640_alpha_safe/idle/thief_rat_idle_03.png",
+          "source_bbox": {
+            "x": 1079,
+            "y": 121,
+            "w": 342,
+            "h": 484
+          },
+          "normalized_placement": {
+            "scale": 0.9090909090909091,
+            "x": 164,
+            "y": 150,
+            "w": 311,
+            "h": 440,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        },
+        {
+          "index": 4,
+          "hd_file": "frames_hd/idle/thief_rat_idle_04.png",
+          "normalized_file": "frames_640/idle/thief_rat_idle_04.png",
+          "alpha_safe_file": "frames_640_alpha_safe/idle/thief_rat_idle_04.png",
+          "source_bbox": {
+            "x": 1422,
+            "y": 173,
+            "w": 406,
+            "h": 433
+          },
+          "normalized_placement": {
+            "scale": 1.0161662817551964,
+            "x": 113,
+            "y": 150,
+            "w": 413,
+            "h": 440,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        },
+        {
+          "index": 5,
+          "hd_file": "frames_hd/idle/thief_rat_idle_05.png",
+          "normalized_file": "frames_640/idle/thief_rat_idle_05.png",
+          "alpha_safe_file": "frames_640_alpha_safe/idle/thief_rat_idle_05.png",
+          "source_bbox": {
+            "x": 1780,
+            "y": 147,
+            "w": 392,
+            "h": 457
+          },
+          "normalized_placement": {
+            "scale": 0.962800875273523,
+            "x": 131,
+            "y": 150,
+            "w": 377,
+            "h": 440,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        }
+      ]
+    },
+    "walk": {
+      "frame_count": 8,
+      "fps": 10,
+      "loop": true,
+      "sheet": "sheets_640/thief_rat_walk_640.png",
+      "frame_size": {
+        "w": 640,
+        "h": 640
+      },
+      "frames": [
+        {
+          "index": 0,
+          "hd_file": "frames_hd/walk/thief_rat_walk_00.png",
+          "normalized_file": "frames_640/walk/thief_rat_walk_00.png",
+          "alpha_safe_file": "frames_640_alpha_safe/walk/thief_rat_walk_00.png",
+          "source_bbox": {
+            "x": 0,
+            "y": 218,
+            "w": 270,
+            "h": 283
+          },
+          "normalized_placement": {
+            "scale": 1.5547703180212014,
+            "x": 110,
+            "y": 150,
+            "w": 420,
+            "h": 440,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        },
+        {
+          "index": 1,
+          "hd_file": "frames_hd/walk/thief_rat_walk_01.png",
+          "normalized_file": "frames_640/walk/thief_rat_walk_01.png",
+          "alpha_safe_file": "frames_640_alpha_safe/walk/thief_rat_walk_01.png",
+          "source_bbox": {
+            "x": 245,
+            "y": 216,
+            "w": 304,
+            "h": 278
+          },
+          "normalized_placement": {
+            "scale": 1.5827338129496402,
+            "x": 79,
+            "y": 150,
+            "w": 481,
+            "h": 440,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        },
+        {
+          "index": 2,
+          "hd_file": "frames_hd/walk/thief_rat_walk_02.png",
+          "normalized_file": "frames_640/walk/thief_rat_walk_02.png",
+          "alpha_safe_file": "frames_640_alpha_safe/walk/thief_rat_walk_02.png",
+          "source_bbox": {
+            "x": 530,
+            "y": 233,
+            "w": 299,
+            "h": 266
+          },
+          "normalized_placement": {
+            "scale": 1.6541353383458646,
+            "x": 72,
+            "y": 150,
+            "w": 495,
+            "h": 440,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        },
+        {
+          "index": 3,
+          "hd_file": "frames_hd/walk/thief_rat_walk_03.png",
+          "normalized_file": "frames_640/walk/thief_rat_walk_03.png",
+          "alpha_safe_file": "frames_640_alpha_safe/walk/thief_rat_walk_03.png",
+          "source_bbox": {
+            "x": 801,
+            "y": 250,
+            "w": 300,
+            "h": 249
+          },
+          "normalized_placement": {
+            "scale": 1.7670682730923695,
+            "x": 55,
+            "y": 150,
+            "w": 530,
+            "h": 440,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        },
+        {
+          "index": 4,
+          "hd_file": "frames_hd/walk/thief_rat_walk_04.png",
+          "normalized_file": "frames_640/walk/thief_rat_walk_04.png",
+          "alpha_safe_file": "frames_640_alpha_safe/walk/thief_rat_walk_04.png",
+          "source_bbox": {
+            "x": 1073,
+            "y": 223,
+            "w": 339,
+            "h": 275
+          },
+          "normalized_placement": {
+            "scale": 1.6,
+            "x": 49,
+            "y": 150,
+            "w": 542,
+            "h": 440,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        },
+        {
+          "index": 5,
+          "hd_file": "frames_hd/walk/thief_rat_walk_05.png",
+          "normalized_file": "frames_640/walk/thief_rat_walk_05.png",
+          "alpha_safe_file": "frames_640_alpha_safe/walk/thief_rat_walk_05.png",
+          "source_bbox": {
+            "x": 1388,
+            "y": 234,
+            "w": 269,
+            "h": 269
+          },
+          "normalized_placement": {
+            "scale": 1.6356877323420074,
+            "x": 100,
+            "y": 150,
+            "w": 440,
+            "h": 440,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        },
+        {
+          "index": 6,
+          "hd_file": "frames_hd/walk/thief_rat_walk_06.png",
+          "normalized_file": "frames_640/walk/thief_rat_walk_06.png",
+          "alpha_safe_file": "frames_640_alpha_safe/walk/thief_rat_walk_06.png",
+          "source_bbox": {
+            "x": 1622,
+            "y": 226,
+            "w": 277,
+            "h": 263
+          },
+          "normalized_placement": {
+            "scale": 1.673003802281369,
+            "x": 88,
+            "y": 150,
+            "w": 463,
+            "h": 440,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        },
+        {
+          "index": 7,
+          "hd_file": "frames_hd/walk/thief_rat_walk_07.png",
+          "normalized_file": "frames_640/walk/thief_rat_walk_07.png",
+          "alpha_safe_file": "frames_640_alpha_safe/walk/thief_rat_walk_07.png",
+          "source_bbox": {
+            "x": 1861,
+            "y": 244,
+            "w": 311,
+            "h": 255
+          },
+          "normalized_placement": {
+            "scale": 1.7254901960784315,
+            "x": 51,
+            "y": 150,
+            "w": 537,
+            "h": 440,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        }
+      ]
+    },
+    "attack": {
+      "frame_count": 8,
+      "fps": 12,
+      "loop": false,
+      "sheet": "sheets_640/thief_rat_attack_640.png",
+      "frame_size": {
+        "w": 640,
+        "h": 640
+      },
+      "frames": [
+        {
+          "index": 0,
+          "hd_file": "frames_hd/attack/thief_rat_attack_00.png",
+          "normalized_file": "frames_640/attack/thief_rat_attack_00.png",
+          "alpha_safe_file": "frames_640_alpha_safe/attack/thief_rat_attack_00.png",
+          "source_bbox": {
+            "x": 2,
+            "y": 310,
+            "w": 301,
+            "h": 243
+          },
+          "normalized_placement": {
+            "scale": 1.8106995884773662,
+            "x": 47,
+            "y": 150,
+            "w": 545,
+            "h": 440,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        },
+        {
+          "index": 1,
+          "hd_file": "frames_hd/attack/thief_rat_attack_01.png",
+          "normalized_file": "frames_640/attack/thief_rat_attack_01.png",
+          "alpha_safe_file": "frames_640_alpha_safe/attack/thief_rat_attack_01.png",
+          "source_bbox": {
+            "x": 265,
+            "y": 272,
+            "w": 328,
+            "h": 264
+          },
+          "normalized_placement": {
+            "scale": 1.6666666666666667,
+            "x": 46,
+            "y": 150,
+            "w": 547,
+            "h": 440,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        },
+        {
+          "index": 2,
+          "hd_file": "frames_hd/attack/thief_rat_attack_02.png",
+          "normalized_file": "frames_640/attack/thief_rat_attack_02.png",
+          "alpha_safe_file": "frames_640_alpha_safe/attack/thief_rat_attack_02.png",
+          "source_bbox": {
+            "x": 544,
+            "y": 167,
+            "w": 325,
+            "h": 288
+          },
+          "normalized_placement": {
+            "scale": 1.5277777777777777,
+            "x": 71,
+            "y": 150,
+            "w": 497,
+            "h": 440,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        },
+        {
+          "index": 3,
+          "hd_file": "frames_hd/attack/thief_rat_attack_03.png",
+          "normalized_file": "frames_640/attack/thief_rat_attack_03.png",
+          "alpha_safe_file": "frames_640_alpha_safe/attack/thief_rat_attack_03.png",
+          "source_bbox": {
+            "x": 829,
+            "y": 238,
+            "w": 315,
+            "h": 299
+          },
+          "normalized_placement": {
+            "scale": 1.471571906354515,
+            "x": 88,
+            "y": 150,
+            "w": 464,
+            "h": 440,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        },
+        {
+          "index": 4,
+          "hd_file": "frames_hd/attack/thief_rat_attack_04.png",
+          "normalized_file": "frames_640/attack/thief_rat_attack_04.png",
+          "alpha_safe_file": "frames_640_alpha_safe/attack/thief_rat_attack_04.png",
+          "source_bbox": {
+            "x": 1082,
+            "y": 317,
+            "w": 382,
+            "h": 237
+          },
+          "normalized_placement": {
+            "scale": 1.5706806282722514,
+            "x": 20,
+            "y": 218,
+            "w": 600,
+            "h": 372,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        },
+        {
+          "index": 5,
+          "hd_file": "frames_hd/attack/thief_rat_attack_05.png",
+          "normalized_file": "frames_640/attack/thief_rat_attack_05.png",
+          "alpha_safe_file": "frames_640_alpha_safe/attack/thief_rat_attack_05.png",
+          "source_bbox": {
+            "x": 1427,
+            "y": 331,
+            "w": 312,
+            "h": 225
+          },
+          "normalized_placement": {
+            "scale": 1.9230769230769231,
+            "x": 20,
+            "y": 157,
+            "w": 600,
+            "h": 433,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        },
+        {
+          "index": 6,
+          "hd_file": "frames_hd/attack/thief_rat_attack_06.png",
+          "normalized_file": "frames_640/attack/thief_rat_attack_06.png",
+          "alpha_safe_file": "frames_640_alpha_safe/attack/thief_rat_attack_06.png",
+          "source_bbox": {
+            "x": 1710,
+            "y": 287,
+            "w": 256,
+            "h": 268
+          },
+          "normalized_placement": {
+            "scale": 1.6417910447761195,
+            "x": 110,
+            "y": 150,
+            "w": 420,
+            "h": 440,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        },
+        {
+          "index": 7,
+          "hd_file": "frames_hd/attack/thief_rat_attack_07.png",
+          "normalized_file": "frames_640/attack/thief_rat_attack_07.png",
+          "alpha_safe_file": "frames_640_alpha_safe/attack/thief_rat_attack_07.png",
+          "source_bbox": {
+            "x": 1932,
+            "y": 269,
+            "w": 230,
+            "h": 285
+          },
+          "normalized_placement": {
+            "scale": 1.543859649122807,
+            "x": 142,
+            "y": 150,
+            "w": 355,
+            "h": 440,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        }
+      ]
+    },
+    "hit": {
+      "frame_count": 4,
+      "fps": 12,
+      "loop": false,
+      "sheet": "sheets_640/thief_rat_hit_640.png",
+      "frame_size": {
+        "w": 640,
+        "h": 640
+      },
+      "frames": [
+        {
+          "index": 0,
+          "hd_file": "frames_hd/hit/thief_rat_hit_00.png",
+          "normalized_file": "frames_640/hit/thief_rat_hit_00.png",
+          "alpha_safe_file": "frames_640_alpha_safe/hit/thief_rat_hit_00.png",
+          "source_bbox": {
+            "x": 7,
+            "y": 81,
+            "w": 589,
+            "h": 539
+          },
+          "normalized_placement": {
+            "scale": 0.8163265306122449,
+            "x": 79,
+            "y": 150,
+            "w": 481,
+            "h": 440,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        },
+        {
+          "index": 1,
+          "hd_file": "frames_hd/hit/thief_rat_hit_01.png",
+          "normalized_file": "frames_640/hit/thief_rat_hit_01.png",
+          "alpha_safe_file": "frames_640_alpha_safe/hit/thief_rat_hit_01.png",
+          "source_bbox": {
+            "x": 493,
+            "y": 65,
+            "w": 607,
+            "h": 511
+          },
+          "normalized_placement": {
+            "scale": 0.8610567514677103,
+            "x": 58,
+            "y": 150,
+            "w": 523,
+            "h": 440,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        },
+        {
+          "index": 2,
+          "hd_file": "frames_hd/hit/thief_rat_hit_02.png",
+          "normalized_file": "frames_640/hit/thief_rat_hit_02.png",
+          "alpha_safe_file": "frames_640_alpha_safe/hit/thief_rat_hit_02.png",
+          "source_bbox": {
+            "x": 1110,
+            "y": 217,
+            "w": 538,
+            "h": 429
+          },
+          "normalized_placement": {
+            "scale": 1.0256410256410255,
+            "x": 44,
+            "y": 150,
+            "w": 552,
+            "h": 440,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        },
+        {
+          "index": 3,
+          "hd_file": "frames_hd/hit/thief_rat_hit_03.png",
+          "normalized_file": "frames_640/hit/thief_rat_hit_03.png",
+          "alpha_safe_file": "frames_640_alpha_safe/hit/thief_rat_hit_03.png",
+          "source_bbox": {
+            "x": 1671,
+            "y": 246,
+            "w": 493,
+            "h": 407
+          },
+          "normalized_placement": {
+            "scale": 1.0810810810810811,
+            "x": 53,
+            "y": 150,
+            "w": 533,
+            "h": 440,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        }
+      ]
+    },
+    "death": {
+      "frame_count": 6,
+      "fps": 8,
+      "loop": false,
+      "sheet": "sheets_640/thief_rat_death_640.png",
+      "frame_size": {
+        "w": 640,
+        "h": 640
+      },
+      "frames": [
+        {
+          "index": 0,
+          "hd_file": "frames_hd/death/thief_rat_death_00.png",
+          "normalized_file": "frames_640/death/thief_rat_death_00.png",
+          "alpha_safe_file": "frames_640_alpha_safe/death/thief_rat_death_00.png",
+          "source_bbox": {
+            "x": 7,
+            "y": 150,
+            "w": 373,
+            "h": 398
+          },
+          "normalized_placement": {
+            "scale": 1.1055276381909547,
+            "x": 114,
+            "y": 150,
+            "w": 412,
+            "h": 440,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        },
+        {
+          "index": 1,
+          "hd_file": "frames_hd/death/thief_rat_death_01.png",
+          "normalized_file": "frames_640/death/thief_rat_death_01.png",
+          "alpha_safe_file": "frames_640_alpha_safe/death/thief_rat_death_01.png",
+          "source_bbox": {
+            "x": 347,
+            "y": 186,
+            "w": 391,
+            "h": 356
+          },
+          "normalized_placement": {
+            "scale": 1.2359550561797752,
+            "x": 78,
+            "y": 150,
+            "w": 483,
+            "h": 440,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        },
+        {
+          "index": 2,
+          "hd_file": "frames_hd/death/thief_rat_death_02.png",
+          "normalized_file": "frames_640/death/thief_rat_death_02.png",
+          "alpha_safe_file": "frames_640_alpha_safe/death/thief_rat_death_02.png",
+          "source_bbox": {
+            "x": 722,
+            "y": 286,
+            "w": 377,
+            "h": 282
+          },
+          "normalized_placement": {
+            "scale": 1.5602836879432624,
+            "x": 26,
+            "y": 150,
+            "w": 588,
+            "h": 440,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        },
+        {
+          "index": 3,
+          "hd_file": "frames_hd/death/thief_rat_death_03.png",
+          "normalized_file": "frames_640/death/thief_rat_death_03.png",
+          "alpha_safe_file": "frames_640_alpha_safe/death/thief_rat_death_03.png",
+          "source_bbox": {
+            "x": 1080,
+            "y": 349,
+            "w": 373,
+            "h": 239
+          },
+          "normalized_placement": {
+            "scale": 1.6085790884718498,
+            "x": 20,
+            "y": 206,
+            "w": 600,
+            "h": 384,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        },
+        {
+          "index": 4,
+          "hd_file": "frames_hd/death/thief_rat_death_04.png",
+          "normalized_file": "frames_640/death/thief_rat_death_04.png",
+          "alpha_safe_file": "frames_640_alpha_safe/death/thief_rat_death_04.png",
+          "source_bbox": {
+            "x": 1431,
+            "y": 373,
+            "w": 383,
+            "h": 215
+          },
+          "normalized_placement": {
+            "scale": 1.566579634464752,
+            "x": 20,
+            "y": 253,
+            "w": 600,
+            "h": 337,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        },
+        {
+          "index": 5,
+          "hd_file": "frames_hd/death/thief_rat_death_05.png",
+          "normalized_file": "frames_640/death/thief_rat_death_05.png",
+          "alpha_safe_file": "frames_640_alpha_safe/death/thief_rat_death_05.png",
+          "source_bbox": {
+            "x": 1792,
+            "y": 381,
+            "w": 380,
+            "h": 207
+          },
+          "normalized_placement": {
+            "scale": 1.5789473684210527,
+            "x": 20,
+            "y": 263,
+            "w": 600,
+            "h": 327,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        }
+      ]
+    },
+    "dash": {
+      "frame_count": 6,
+      "fps": 14,
+      "loop": false,
+      "sheet": "sheets_640/thief_rat_dash_640.png",
+      "frame_size": {
+        "w": 640,
+        "h": 640
+      },
+      "frames": [
+        {
+          "index": 0,
+          "hd_file": "frames_hd/dash/thief_rat_dash_00.png",
+          "normalized_file": "frames_640/dash/thief_rat_dash_00.png",
+          "alpha_safe_file": "frames_640_alpha_safe/dash/thief_rat_dash_00.png",
+          "source_bbox": {
+            "x": 0,
+            "y": 290,
+            "w": 390,
+            "h": 226
+          },
+          "normalized_placement": {
+            "scale": 1.5384615384615385,
+            "x": 20,
+            "y": 242,
+            "w": 600,
+            "h": 348,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        },
+        {
+          "index": 1,
+          "hd_file": "frames_hd/dash/thief_rat_dash_01.png",
+          "normalized_file": "frames_640/dash/thief_rat_dash_01.png",
+          "alpha_safe_file": "frames_640_alpha_safe/dash/thief_rat_dash_01.png",
+          "source_bbox": {
+            "x": 370,
+            "y": 264,
+            "w": 372,
+            "h": 247
+          },
+          "normalized_placement": {
+            "scale": 1.6129032258064515,
+            "x": 20,
+            "y": 192,
+            "w": 600,
+            "h": 398,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        },
+        {
+          "index": 2,
+          "hd_file": "frames_hd/dash/thief_rat_dash_02.png",
+          "normalized_file": "frames_640/dash/thief_rat_dash_02.png",
+          "alpha_safe_file": "frames_640_alpha_safe/dash/thief_rat_dash_02.png",
+          "source_bbox": {
+            "x": 711,
+            "y": 242,
+            "w": 390,
+            "h": 266
+          },
+          "normalized_placement": {
+            "scale": 1.5384615384615385,
+            "x": 20,
+            "y": 181,
+            "w": 600,
+            "h": 409,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        },
+        {
+          "index": 3,
+          "hd_file": "frames_hd/dash/thief_rat_dash_03.png",
+          "normalized_file": "frames_640/dash/thief_rat_dash_03.png",
+          "alpha_safe_file": "frames_640_alpha_safe/dash/thief_rat_dash_03.png",
+          "source_bbox": {
+            "x": 1073,
+            "y": 249,
+            "w": 390,
+            "h": 260
+          },
+          "normalized_placement": {
+            "scale": 1.5384615384615385,
+            "x": 20,
+            "y": 190,
+            "w": 600,
+            "h": 400,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        },
+        {
+          "index": 4,
+          "hd_file": "frames_hd/dash/thief_rat_dash_04.png",
+          "normalized_file": "frames_640/dash/thief_rat_dash_04.png",
+          "alpha_safe_file": "frames_640_alpha_safe/dash/thief_rat_dash_04.png",
+          "source_bbox": {
+            "x": 1435,
+            "y": 263,
+            "w": 433,
+            "h": 249
+          },
+          "normalized_placement": {
+            "scale": 1.3856812933025404,
+            "x": 20,
+            "y": 245,
+            "w": 600,
+            "h": 345,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        },
+        {
+          "index": 5,
+          "hd_file": "frames_hd/dash/thief_rat_dash_05.png",
+          "normalized_file": "frames_640/dash/thief_rat_dash_05.png",
+          "alpha_safe_file": "frames_640_alpha_safe/dash/thief_rat_dash_05.png",
+          "source_bbox": {
+            "x": 1841,
+            "y": 238,
+            "w": 331,
+            "h": 276
+          },
+          "normalized_placement": {
+            "scale": 1.5942028985507246,
+            "x": 56,
+            "y": 150,
+            "w": 528,
+            "h": 440,
+            "pivot": {
+              "x": 0.5,
+              "y": 0.921875
+            }
+          }
+        }
+      ]
+    }
+  }
+}

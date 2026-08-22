@@ -1,0 +1,197 @@
+เพิ่ม Boss Stage 1
+
+ชื่อ:
+
+KING SLIME
+ผู้กลืนกินพลังตัวเลข
+
+ใช้ Boss Asset ที่ฉันแนบ
+
+
+
+==============================
+BOSS INTRO
+==============================
+
+เมื่อ Player เข้า Boss Arena:
+
+Lock Movement
+
+King Slime ปรากฏตัว
+
+แสดง:
+
+KING SLIME
+
+ผู้กลืนกินพลังตัวเลข
+
+Intro สั้น
+ไม่เกินประมาณ 3-5 วินาที
+
+จากนั้นเริ่ม Battle
+
+==============================
+QUESTION
+==============================
+
+ทุกครั้งต้อง Generate Question ใหม่
+
+Stage 1 Topic:
+
+ADDITION
+
+Boss Question:
+
+ข้อแรก = Easy
+
+ข้อต่อไป = Easy / Normal แบบสุ่ม
+
+ข้อสุดท้ายเน้น Normal
+
+ห้ามใช้ Fixed Question
+
+==============================
+BOSS TIMER
+==============================
+
+เฉพาะ Boss เท่านั้นที่มีเวลา
+
+Easy:
+15 seconds
+
+Normal:
+18 seconds
+
+Hard:
+22 seconds
+
+ถ้า Grade = ป.3
+เพิ่มอีก 2 seconds
+
+Timer เริ่ม
+หลังจาก Question
+และ Answer Choices
+แสดงครบแล้วเท่านั้น
+
+==============================
+CORRECT
+==============================
+
+ตอบถูก:
+
+Stop Timer
+
+Player Attack
+
+Boss Hit
+
+Boss HP -1
+
+Correct Streak +1
+
+ถ้า Streak = 3
+
+Player HP +1
+
+HP สูงสุด = 5
+
+Streak = 0
+
+ถ้า Boss ยังไม่ตาย
+
+Generate Question ใหม่
+
+==============================
+WRONG
+==============================
+
+ตอบผิด:
+
+Stop Timer
+
+King Slime Attack
+
+Player HP -1
+
+Correct Streak = 0
+
+แสดงคำตอบถูกสั้น ๆ
+
+Generate Question ใหม่
+
+==============================
+TIME OUT
+==============================
+
+Timer = 0
+
+แสดง:
+
+TIME'S UP
+
+King Slime Attack
+
+Player HP -1
+
+Correct Streak = 0
+
+แสดงคำตอบถูก
+
+Generate Question ใหม่
+
+==============================
+TIMER UI
+==============================
+
+แสดง:
+
+⏱ 15
+
+และ Progress Bar
+
+ช่วงปกติ
+ไม่ต้องมีเสียงกดดัน
+
+เฉพาะ 3 วินาทีสุดท้าย:
+
+Timer Pulse เบา ๆ
+
+Warning Sound เบา ๆ
+
+เปลี่ยน Visual ให้เห็นชัดขึ้น
+
+ห้ามใช้เสียง Buzzer รุนแรง
+
+==============================
+BOSS PHASE VISUAL
+==============================
+
+3 HP:
+Normal
+
+2 HP:
+Angry + Glow เล็กน้อย
+
+1 HP:
+Effect มากขึ้น
+Camera Shake เล็กน้อย
+
+IMPORTANT:
+
+ห้ามลดเวลาตอบ
+ตาม HP ของ Boss
+
+==============================
+BOSS DEFEAT
+==============================
+
+Boss HP = 0
+
+Play Death Animation
+
+Spawn:
+
+NUMBER CORE FRAGMENT #1
+
+จากนั้นเข้าสู่
+Stage Clear Sequence

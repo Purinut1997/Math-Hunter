@@ -1,0 +1,23 @@
+{
+  "character": "Lord Zero",
+  "usage": "Stage 1 ending apparition / silhouette",
+  "frameWidth": 512,
+  "frameHeight": 768,
+  "animations": {
+    "lord-zero-apparition": {
+      "asset": "lord_zero_apparition.png",
+      "frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "frameRate": 6,
+      "repeat": -1
+    }
+  }
+}

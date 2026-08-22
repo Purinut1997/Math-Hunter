@@ -1,0 +1,10 @@
+MAX — Unity Import Guide
+1) Use files in sheets_640/
+2) Texture Type = Sprite (2D and UI)
+3) Sprite Mode = Multiple
+4) Alpha Is Transparency = ON
+5) Compression = None or High Quality
+6) Filter Mode = Bilinear
+7) Sprite Editor > Slice > Grid by Cell Size = 640 x 640
+8) Pivot = Bottom Center or Custom X=0.5 Y≈0.925
+9) Suggested FPS: Idle 6, Walk 10, Attack 12, Hit 12, Death 8, Dash 14

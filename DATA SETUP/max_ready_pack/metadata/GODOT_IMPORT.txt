@@ -1,0 +1,7 @@
+MAX — Godot Import Guide
+- Use sheets_640/ with AnimatedSprite2D + SpriteFrames
+- Hframes = frame count for that animation
+- Vframes = 1
+- Frame size = 640x640
+- Suggested pivot/anchor near bottom center (x=50%, y≈92.5%)
+- Loop ON for Idle/Walk, OFF for Attack/Hit/Death/Dash

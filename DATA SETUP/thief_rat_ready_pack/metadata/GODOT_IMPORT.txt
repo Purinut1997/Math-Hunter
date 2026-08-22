@@ -1,0 +1,8 @@
+THIEF_RAT — Godot
+- ใช้ sheets_640/ กับ AnimatedSprite2D + SpriteFrames
+- Hframes = จำนวนเฟรมของแต่ละแถว/ไฟล์
+- Vframes = 1
+- Frame size = 640x640
+- ตำแหน่งจุดยืนแนะนำอยู่บริเวณ x=50%, y≈92%
+- Filter: Linear สำหรับภาพวาด HD
+- Loop: Idle/Walk = ON; Attack/Hit/Death/Dash = OFF

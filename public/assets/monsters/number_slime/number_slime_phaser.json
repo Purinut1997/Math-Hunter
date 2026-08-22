@@ -1,0 +1,56 @@
+{
+  "character": "Number Slime",
+  "frameWidth": 256,
+  "frameHeight": 256,
+  "animations": {
+    "number-slime-idle": {
+      "asset": "number_slime_idle.png",
+      "frames": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "frameRate": 6,
+      "repeat": -1
+    },
+    "number-slime-attack": {
+      "asset": "number_slime_attack.png",
+      "frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "frameRate": 11,
+      "repeat": 0
+    },
+    "number-slime-hit": {
+      "asset": "number_slime_hit.png",
+      "frames": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "frameRate": 10,
+      "repeat": 0
+    },
+    "number-slime-death": {
+      "asset": "number_slime_death.png",
+      "frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "frameRate": 8,
+      "repeat": 0
+    }
+  }
+}

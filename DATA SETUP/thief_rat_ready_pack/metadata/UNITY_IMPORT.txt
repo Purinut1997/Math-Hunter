@@ -1,0 +1,11 @@
+THIEF_RAT — Unity
+1) ใช้ไฟล์ใน sheets_640/
+2) Texture Type = Sprite (2D and UI)
+3) Sprite Mode = Multiple
+4) Pixels Per Unit: เริ่มที่ 100 แล้วปรับตามขนาดเกม
+5) Filter Mode: Bilinear (ภาพวาด HD) / Point หากต้องการขอบคม
+6) Compression: None หรือ High Quality
+7) Alpha Is Transparency = ON
+8) Sprite Editor > Slice > Grid by Cell Size = 640 x 640
+9) Pivot แนะนำ Bottom Center หรือ Custom X=0.5, Y≈0.92
+10) FPS: Idle 6, Walk 10, Attack 12, Hit 12, Death 8, Dash 14

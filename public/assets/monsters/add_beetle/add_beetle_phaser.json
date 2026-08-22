@@ -1,0 +1,56 @@
+{
+  "character": "Add Beetle",
+  "frameWidth": 256,
+  "frameHeight": 256,
+  "animations": {
+    "add-beetle-idle": {
+      "asset": "add_beetle_idle.png",
+      "frames": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "frameRate": 6,
+      "repeat": -1
+    },
+    "add-beetle-attack": {
+      "asset": "add_beetle_attack.png",
+      "frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "frameRate": 11,
+      "repeat": 0
+    },
+    "add-beetle-hit": {
+      "asset": "add_beetle_hit.png",
+      "frames": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "frameRate": 10,
+      "repeat": 0
+    },
+    "add-beetle-death": {
+      "asset": "add_beetle_death.png",
+      "frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "frameRate": 8,
+      "repeat": 0
+    }
+  }
+}

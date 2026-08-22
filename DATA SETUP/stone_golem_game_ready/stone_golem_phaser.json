@@ -1,0 +1,56 @@
+{
+  "character": "Stone Golem",
+  "frameWidth": 256,
+  "frameHeight": 256,
+  "animations": {
+    "stone-golem-idle": {
+      "asset": "stone_golem_idle.png",
+      "frames": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "frameRate": 5,
+      "repeat": -1
+    },
+    "stone-golem-attack": {
+      "asset": "stone_golem_attack.png",
+      "frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "frameRate": 10,
+      "repeat": 0
+    },
+    "stone-golem-hit": {
+      "asset": "stone_golem_hit.png",
+      "frames": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "frameRate": 9,
+      "repeat": 0
+    },
+    "stone-golem-death": {
+      "asset": "stone_golem_death.png",
+      "frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "frameRate": 7,
+      "repeat": 0
+    }
+  }
+}

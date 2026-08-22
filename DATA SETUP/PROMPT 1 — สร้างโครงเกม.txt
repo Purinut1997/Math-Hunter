@@ -1,0 +1,629 @@
+สร้างโปรเจกต์เกมชื่อ
+
+MATH HUNTER
+ศึกพิชิตแก่นพลังตัวเลข
+
+ใช้เทคโนโลยี:
+- Phaser
+- TypeScript
+- Vite
+- HTML/CSS สำหรับ UI Overlay
+
+เกมเป็น 2D Top-Down Educational Adventure
+
+IMPORTANT:
+ตอนนี้ให้สร้างเฉพาะโครงสร้างระบบสำหรับ Stage 1
+ยังไม่ต้องสร้างด่านอื่น
+
+==============================
+CORE GAME RULE
+==============================
+
+เกมนี้ไม่ใช่ RPG
+
+ห้ามมี:
+- XP
+- Level
+- Coin
+- Skill Tree
+- Equipment
+- Inventory
+- Attack Stat
+- Defense Stat
+
+ผู้เล่นมีเพียง:
+
+Player HP = 5
+Correct Streak
+Current Stage
+
+กฎการต่อสู้:
+
+ตอบถูก
+→ Monster HP -1
+→ Correct Streak +1
+
+ตอบผิด
+→ Player HP -1
+→ Correct Streak = 0
+
+ตอบถูกติดต่อกัน 3 ครั้ง
+→ Player HP +1
+→ HP ห้ามเกิน 5
+→ Correct Streak = 0
+
+ถ้า Player HP = 0
+→ Game Over
+→ Restart ด่านปัจจุบันตั้งแต่ต้น
+
+เมื่อผ่านด่าน
+→ Player HP กลับเป็น 5 เต็ม
+→ ปลดล็อกด่านถัดไป
+
+==============================
+QUESTION SYSTEM
+==============================
+
+ห้ามใช้ชุดโจทย์แบบ Fixed Question Bank
+
+ต้องสร้าง Question Generator
+ที่สุ่มสร้างโจทย์ใหม่ทุกครั้ง
+
+ทุกโจทย์มี:
+- questionId
+- topic
+- difficulty
+- questionText
+- correctAnswer
+- distractors 3 ตัว
+- answerChoices 4 ตัว
+
+ต้องสุ่มตำแหน่งคำตอบถูกทุกครั้ง
+
+เก็บโจทย์ล่าสุด 15 ข้อ
+และห้ามสร้างโจทย์ซ้ำในช่วงดังกล่าว
+
+สร้าง validateQuestion()
+เพื่อตรวจสอบว่า:
+
+- คำตอบถูกต้องจริง
+- ตัวเลือกไม่ซ้ำ
+- มีคำตอบถูกเพียง 1 ตัว
+- ไม่มี NaN
+- ไม่มีหารด้วย 0
+- เนื้อหาไม่เกินระดับชั้น
+- Difficulty ถูกต้อง
+
+==============================
+PROJECT STRUCTURE
+==============================
+
+จัดโครงสร้างประมาณ:
+
+src/
+  game/
+    scenes/
+    entities/
+    systems/
+    data/
+    ui/
+
+public/
+  assets/
+    backgrounds/
+    maps/
+    player/
+    monsters/
+    boss/
+    ui/
+    audio/
+    branding/
+
+สร้างระบบแยก:
+
+QuestionGenerator
+CombatSystem
+HealthSystem
+AudioManager
+SaveSystem
+
+อย่าเอา Logic ทั้งหมดไปรวมใน Scene เดียว
+
+==============================
+IMPORTANT
+==============================
+
+อย่าใช้วงกลม สี่เหลี่ยม หรือ Placeholder
+เป็นกราฟิก Final
+
+ภาพที่ฉันนำมาให้ภายหลัง
+คือ Visual Source of Truth
+
+สร้างโครงโปรเจกต์ให้พร้อม
+แล้ว Run ตรวจสอบว่าไม่มี Console Error
+
+ยังไม่ต้องสร้าง Main Menu หรือ Stage 1
+จนกว่าจะทำ Foundation เสร็จ
+==============================
+DEVELOPER CREDIT
+==============================
+
+This game must include permanent developer credit.
+
+Developer name:
+
+Purinut
+
+Credit text:
+
+Developed by Purinut
+
+I will provide a transparent PNG credit badge.
+
+Create a reusable component:
+
+DeveloperCredit
+
+Requirements:
+
+- use the supplied PNG asset directly
+- preserve aspect ratio
+- never crop or stretch the badge
+- keep it small and unobtrusive
+- do not make it more prominent than the MATH HUNTER logo
+- credit must remain present after future UI refactors
+- do not remove, rename, replace, or hide the credit
+
+Credit must appear in:
+
+1. Main Menu
+2. Credits / About screen
+3. Stage Clear screen
+4. Final Ending / Game Completion screen
+
+Store the asset at:
+
+public/assets/branding/developed-by-purinut.png
+
+Create a reusable DeveloperCredit component
+instead of duplicating the credit implementation
+across different scenes.
+
+TASK:
+Create and enforce a reusable UI SYSTEM
+for the entire MATH HUNTER game.
+
+The UI must be consistent across:
+
+- Main Menu
+- Stage HUD
+- Normal Monster Combat
+- Boss Combat
+- Pause
+- Game Over
+- Stage Clear
+- Settings
+- Credits
+
+================================
+VISUAL STYLE
+================================
+
+Fantasy Adventure RPG UI
+
+Primary colors:
+
+- Dark Navy
+- Royal Blue
+- Electric Blue
+- Gold
+- White
+
+Use:
+
+- dark translucent panels
+- gold borders
+- subtle cyan glow
+- fantasy ornamental corners
+- polished game-style buttons
+
+Do NOT use:
+
+- plain white cards
+- Bootstrap-style buttons
+- dashboard UI
+- large panels covering the game world
+- emoji as production graphics
+
+The game world must remain visually dominant.
+
+================================
+STAGE HUD
+================================
+
+During normal exploration,
+show only minimal HUD.
+
+Top-left:
+
+Player HP
+
+Example:
+
+❤️ ❤️ ❤️ ❤️ ❤️
+
+Near HP:
+
+Correct Streak
+
+○ ○ ○
+
+Top-right:
+
+Stage name
+
+ด่าน 1
+หมู่บ้านบวกไว
+
+Monster progress:
+
+3 / 10
+
+Pause button
+
+Do not show:
+
+XP
+Level
+Coin
+Inventory
+Skill
+Attack
+Defense
+
+================================
+NORMAL COMBAT UI
+================================
+
+When a Monster Encounter begins:
+
+disable movement temporarily.
+
+Do NOT change to a completely separate screen.
+
+Show a combat overlay
+while keeping the Map, Player,
+and Monster visible.
+
+Combat UI must show:
+
+Monster Name
+
+Monster HP
+
+Question
+
+4 Answer Choices
+
+Player HP
+
+Correct Streak
+
+Suggested layout:
+
+Monster name + HP
+near upper-middle
+
+Question panel
+near lower-middle
+
+4 Answer buttons
+below Question
+
+Keep the center of the game visible
+for Player and Monster animations.
+
+================================
+QUESTION PANEL
+================================
+
+Question must be the most readable
+element in Combat UI.
+
+Use large text.
+
+Example:
+
+37 + 25 = ?
+
+Answer choices:
+
+[ 52 ]
+[ 61 ]
+[ 62 ]
+[ 63 ]
+
+Desktop:
+
+support Mouse and Keyboard.
+
+Mobile:
+
+support Touch.
+
+Minimum touch target:
+
+48px.
+
+================================
+CORRECT FEEDBACK
+================================
+
+Correct Answer:
+
+- selected button glows cyan/gold
+- short "CORRECT!" feedback
+- Player Attack animation
+- Monster Hit animation
+- Monster HP decreases
+
+Do not freeze gameplay longer than necessary.
+
+================================
+WRONG FEEDBACK
+================================
+
+Wrong Answer:
+
+- selected answer shows gentle red feedback
+- Monster Attack animation
+- Player HP -1
+- Correct Streak reset
+
+Show:
+
+คำตอบที่ถูกคือ ...
+
+for approximately 1–1.5 seconds.
+
+Then generate a new question.
+
+Avoid harsh buzzer effects.
+
+================================
+CORRECT STREAK
+================================
+
+Display:
+
+○ ○ ○
+
+1 correct:
+
+● ○ ○
+
+2 correct:
+
+● ● ○
+
+3 correct:
+
+● ● ●
+
+Then:
+
+HEAL +1 ❤️
+
+Reset:
+
+○ ○ ○
+
+If HP already equals Max HP:
+
+show:
+
+MAX HP
+
+but still reset streak.
+
+================================
+BOSS UI
+================================
+
+Boss UI must visually feel more important
+than Normal Monster Combat.
+
+Display:
+
+KING SLIME
+
+Boss HP
+
+Countdown Timer
+
+Timer Progress Bar
+
+Question
+
+4 Answer Choices
+
+Player HP
+
+Correct Streak
+
+Use a stronger red/gold Boss Name Plate
+while keeping the overall blue/gold game style.
+
+Timer:
+
+Easy = 15 sec
+Normal = 18 sec
+Hard = 22 sec
+
+Grade 3:
++2 sec.
+
+Only final 3 seconds:
+
+- subtle pulse
+- warning color
+- gentle warning sound
+
+Do not make the entire countdown stressful.
+
+================================
+MOBILE LANDSCAPE
+================================
+
+Design specifically for Mobile Landscape.
+
+Normal exploration:
+
+bottom-left:
+Virtual Joystick
+
+top-left:
+Player HP
+
+top-right:
+Pause
+
+During Combat:
+
+disable Joystick.
+
+Use lower portion for:
+
+Question
+Answer Choices
+
+Do not cover:
+
+Player
+Monster
+important battle animation.
+
+Buttons must remain large enough
+for children's touch input.
+
+================================
+PAUSE
+================================
+
+Pause Overlay:
+
+[ เล่นต่อ ]
+
+[ เริ่มด่านใหม่ ]
+
+[ ตั้งค่า ]
+
+[ กลับหน้าหลัก ]
+
+Pause must stop:
+
+movement
+combat input
+boss countdown
+
+================================
+GAME OVER
+================================
+
+Centered Fantasy Overlay:
+
+GAME OVER
+
+พลังของ Math Hunter หมดลง...
+
+Buttons:
+
+[ ลองอีกครั้ง ]
+
+[ กลับหน้าหลัก ]
+
+ลองอีกครั้ง:
+
+restart current Stage completely.
+
+================================
+STAGE CLEAR
+================================
+
+Display:
+
+STAGE CLEAR
+
+หมู่บ้านบวกไว
+
+Number Core Fragment
+
+◆ 1 / 10
+
+Monster:
+
+10 / 10
+
+Buttons:
+
+[ ด่านถัดไป ]
+
+[ กลับหน้าเลือกด่าน ]
+
+Also display reusable:
+
+Developed by Purinut
+
+credit badge.
+
+================================
+RESPONSIVE
+================================
+
+Support:
+
+Desktop
+Laptop
+Tablet Landscape
+Mobile Landscape
+
+UI must reposition automatically.
+
+Do not simply shrink Desktop UI.
+
+================================
+ARCHITECTURE
+================================
+
+Prefer reusable HTML/CSS UI Overlay
+for interface elements.
+
+Create reusable components such as:
+
+GameHUD
+HealthHUD
+CorrectStreakHUD
+QuestionPanel
+AnswerButton
+MonsterHUD
+BossHUD
+BossTimer
+PauseMenu
+GameOverModal
+StageClearModal
+DeveloperCredit
+
+Do not duplicate UI logic across Scenes.
+
+================================
+IMPORTANT
+================================
+
+This UI SYSTEM is the visual rule
+for the entire game.
+
+Future scenes must reuse these components
+and maintain the same visual language.
+
+Do not redesign individual screens
+into unrelated styles during future refactors.

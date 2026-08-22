@@ -1,0 +1,174 @@
+สร้างหน้า MAIN MENU ของเกม MATH HUNTER
+
+ฉันได้แนบ:
+
+1. Animated Background GIF
+2. Game Logo ถ้ามี
+3. Developer Logo
+
+IMPORTANT:
+
+ต้องใช้ Background GIF ที่ฉันแนบโดยตรง
+
+ห้าม:
+- วาด Background ใหม่
+- สร้างฉากแทนด้วย CSS
+- สร้าง Background ด้วย Phaser Graphics
+- ฝังปุ่มลงใน GIF
+- เปลี่ยนภาพต้นฉบับ
+
+==============================
+LAYOUT
+==============================
+
+Background:
+เต็มหน้าจอ
+รักษา Aspect Ratio
+ใช้ cover
+
+UI เป็น Layer แยกอยู่เหนือ Background
+
+Desktop:
+
+ด้านซ้าย:
+
+MATH HUNTER
+
+ศึกพิชิตแก่นพลังตัวเลข
+
+ปุ่มหลัก:
+
+[ เริ่มผจญภัย ]
+
+[ เล่นต่อ ]
+
+[ เลือกด่าน ]
+
+ปุ่มรอง:
+
+[ ตั้งค่า ]
+
+[ เครดิต ]
+
+ด้านล่าง:
+
+Developed by Purinut
+
+พร้อม Developer Logo ขนาดเล็ก
+
+==============================
+STYLE
+==============================
+
+Fantasy RPG
+
+สีหลัก:
+- Dark Navy
+- Royal Blue
+- Gold
+- Electric Blue
+
+ปุ่ม:
+- พื้นหลังน้ำเงินเข้มโปร่งใส
+- ขอบทอง
+- Glow ฟ้าเล็กน้อย
+- มุมแบบ Fantasy RPG
+
+Hover:
+scale 1.02
+สว่างขึ้นเล็กน้อย
+
+Pressed:
+scale 0.96
+
+Animation:
+180-300ms
+
+ห้ามทำ UI แบบ Dashboard
+ห้ามใช้ปุ่มขาวธรรมดา
+
+==============================
+BUTTON ACTION
+==============================
+
+เริ่มผจญภัย
+→ ไปหน้าเลือกระดับชั้น
+
+เล่นต่อ
+→ เล่น Stage ล่าสุดจาก Save
+
+เลือกด่าน
+→ Stage Select
+
+ตั้งค่า
+→ Settings Modal
+
+เครดิต
+→ Credits Modal
+
+ทุกปุ่มต้องใช้งานได้จริง
+==============================
+DEVELOPER CREDIT
+==============================
+
+I have attached:
+
+Developed by Purinut transparent PNG badge.
+
+Save/use it as:
+
+/assets/branding/developed-by-purinut.png
+
+Display it at the bottom-left of the Main Menu.
+
+IMPORTANT:
+
+- use the supplied image directly
+- do not redraw the badge
+- do not recreate it with plain text
+- preserve its original aspect ratio
+- no cropping
+- no stretching
+- keep the badge visually secondary to the MATH HUNTER logo
+- it must remain readable on desktop and mobile
+
+Desktop:
+recommended width approximately 180–240 px,
+depending on screen size.
+
+Mobile Landscape:
+recommended width approximately 120–170 px.
+
+The badge must not overlap:
+- main menu buttons
+- game logo
+- important characters in the background
+
+Use the reusable DeveloperCredit component
+created in the project foundation.
+
+==============================
+RESPONSIVE
+==============================
+
+รองรับ:
+
+Desktop
+Laptop
+Tablet Landscape
+Mobile Landscape
+
+Mobile:
+
+Logo ด้านซ้ายบน
+
+ปุ่มหลักอยู่ฝั่งซ้ายหรือซ้ายล่าง
+
+Settings ด้านขวาบน
+
+ห้ามบังตัวละครหลักของ Background
+
+Touch Target อย่างน้อย 48px
+
+สร้างให้เสร็จแล้ว Run และตรวจสอบ
+Desktop + Mobile Landscape

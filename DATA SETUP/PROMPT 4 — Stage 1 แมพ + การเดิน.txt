@@ -1,0 +1,660 @@
+TASK:
+สร้างระบบ Stage 1 ของเกม
+
+MATH HUNTER
+ศึกพิชิตแก่นพลังตัวเลข
+
+ชื่อด่าน:
+
+ด่าน 1
+หมู่บ้านบวกไว
+
+ใช้:
+- Phaser
+- TypeScript
+- Vite
+
+ฉันได้แนบ:
+
+1. FINAL STAGE 1 MAP
+2. PLAYER WALK SPRITESHEET
+3. PLAYER IDLE SPRITESHEET
+
+==================================================
+IMPORTANT — VISUAL SOURCE OF TRUTH
+==================================================
+
+ภาพ Stage 1 Map ที่ฉันแนบ
+คือ FINAL VISUAL SOURCE OF TRUTH
+
+ต้องใช้ภาพนี้เป็นฉากของเกมโดยตรง
+
+ห้าม:
+
+- วาด Map ใหม่
+- สร้างหญ้าใหม่
+- สร้างแม่น้ำใหม่
+- สร้างถนนใหม่
+- วาดบ้านใหม่
+- ใช้ Rectangle แทนฉาก
+- ใช้ Phaser Graphics สร้างฉากใหม่
+- ใช้ Placeholder
+- ใช้สีพื้นง่าย ๆ แทนภาพจริง
+
+ภาพ Map ต้องเป็น Visual Layer จริง
+
+ระบบเดิน Collision และ Encounter
+ให้สร้างเป็น Invisible Logic Layer
+ซ้อนอยู่ด้านบน
+
+==================================================
+MAP ARCHITECTURE
+==================================================
+
+โครงสร้างต้องเป็น:
+
+FINAL MAP IMAGE
+↓
+Invisible Walkability / Collision
+↓
+Invisible Progress Gates
+↓
+Encounter Triggers
+↓
+Player / Monster / Boss
+↓
+Effects
+↓
+UI
+
+Production Mode:
+
+ห้ามเห็น:
+- Grid
+- Collision boxes
+- Trigger boxes
+- Encounter IDs
+- Debug labels
+
+==================================================
+PLAYER MOVEMENT
+==================================================
+
+เกมเป็น 2D Top-Down
+
+Player เดินได้ 4 ทิศทาง:
+
+UP
+DOWN
+LEFT
+RIGHT
+
+Desktop:
+
+WASD
+Arrow Keys
+
+Mobile Landscape:
+
+Virtual Analog Joystick
+
+Joystick เป็น Analog Input
+แต่ Logical Movement ต้องแปลงเป็น
+4 Cardinal Directions
+
+ห้ามเดินทแยงเชิง Logic
+
+ถ้า Input มีทั้ง X และ Y:
+
+ใช้ Axis ที่มีค่ามากกว่า
+
+เช่น:
+
+abs(x) > abs(y)
+→ LEFT / RIGHT
+
+abs(y) > abs(x)
+→ UP / DOWN
+
+==================================================
+MOVEMENT FEEL
+==================================================
+
+การเดินต้อง Smooth
+
+ห้ามกระโดด Cell แบบแข็ง ๆ
+
+ใช้ Tween / interpolation
+ระหว่าง Logical Position
+
+Movement ต้อง:
+
+- Responsive
+- กดค้างเดินต่อเนื่องได้
+- ไม่ทะลุกำแพง
+- ไม่ Corner Cut
+- ไม่เดินลงน้ำ
+- ไม่เดินเข้าอาคาร
+
+==================================================
+WALKABLE AREAS
+==================================================
+
+พื้นที่ที่สามารถเดินได้ เช่น:
+
+- ถนนดิน
+- ทางเดิน
+- ลานหมู่บ้าน
+- สะพาน
+- บันได
+- พื้นหญ้าที่เหมาะสม
+- Fountain Area
+- Boss Arena
+- Portal Area
+
+==================================================
+BLOCKED AREAS
+==================================================
+
+ห้ามเดินผ่าน:
+
+- แม่น้ำ
+- น้ำตก
+- หน้าผา
+- บ้าน
+- หลังคา
+- ต้นไม้ใหญ่
+- ป่าทึบ
+- ก้อนหินใหญ่
+- รั้ว
+- กำแพง
+- สิ่งก่อสร้าง
+- Closed Gate
+- Map Boundary
+
+Collision ต้องสอดคล้องกับภาพจริง
+
+อย่าสร้าง Invisible Wall
+ในตำแหน่งที่ผู้เล่นเห็นชัดว่าเดินได้
+ยกเว้นเป็น Progress Gate ของเกม
+
+==================================================
+PLAYER ANIMATION
+==================================================
+
+ใช้ Sprite Assets ที่ฉันแนบ
+
+สร้าง Animation:
+
+idle-down
+idle-up
+idle-left
+idle-right
+
+walk-down
+walk-up
+walk-left
+walk-right
+
+Player ต้องหันไปตามทิศทางล่าสุด
+
+เมื่อหยุดเดิน:
+เล่น Idle ของทิศล่าสุด
+
+ห้ามใช้:
+
+Circle
+Rectangle
+Emoji
+Placeholder Character
+
+==================================================
+CAMERA
+==================================================
+
+Camera Follow Player
+
+ใช้ Smooth Follow
+
+ห้าม Camera ออกจากขอบ Map
+
+ให้สามารถเห็นพื้นที่รอบตัว
+มากพอสำหรับสำรวจเส้นทาง
+
+รองรับ:
+
+Desktop
+Laptop
+Tablet Landscape
+Mobile Landscape
+
+==================================================
+STAGE 1 DESIGN
+==================================================
+
+Stage 1 มี:
+
+10 Normal Monster Encounters
++
+1 Boss
+
+Normal Monster Model
+สามารถใช้ซ้ำได้
+
+มอนสเตอร์จะถูกเพิ่มใน Prompt ถัดไป
+
+ตอนนี้ให้สร้าง:
+
+Encounter Positions
+Encounter Trigger Zones
+Progress Gates
+Route Progression
+
+==================================================
+GUIDED PROGRESSION
+==================================================
+
+เกมต้องมี Guided Route
+
+Player สามารถเดินสำรวจพื้นที่ใกล้เคียงได้
+
+แต่ต้องไม่สามารถ:
+
+- ข้าม Encounter สำคัญ
+- เดินตรงไป Boss
+- เข้า Boss Arena ก่อนเวลา
+- เข้าสู่ Exit Portal ก่อนชนะ Boss
+
+ใช้ระบบ:
+
+Progress Gate
+
+ตัวอย่าง:
+
+Encounter ปัจจุบันยังไม่สำเร็จ
+→ เส้นทางหลักถัดไป Blocked
+
+Monster ถูกกำจัด
+→ Encounter Completed
+→ Gate ที่เกี่ยวข้อง Unlock
+→ เดินไปพื้นที่ถัดไปได้
+
+==================================================
+IMPORTANT — NATURAL BLOCKING
+==================================================
+
+พยายามใช้โครงสร้างใน Map เป็นตัวนำทาง เช่น:
+
+- สะพาน
+- ทางแคบ
+- ประตู
+- ป่า
+- รั้ว
+- หน้าผา
+- อาคาร
+- ทางขึ้นลง
+
+ถ้าจำเป็นต้อง Block เพิ่ม
+
+ใช้:
+
+Invisible Progress Gate
+
+หรือ Visual Effect ภายหลัง เช่น:
+
+Magical Barrier
+
+ห้ามใช้:
+
+Visible Rectangle Wall
+Debug Wall
+สีแดงปิดทางใน Production
+
+==================================================
+STAGE FLOW
+==================================================
+
+Stage Flow:
+
+START AREA
+↓
+Encounter 01
+↓
+Encounter 02
+↓
+Encounter 03
+↓
+Encounter 04
+↓
+Fountain / Mid Stage Area
+↓
+Encounter 05
+↓
+Encounter 06
+↓
+Encounter 07
+↓
+Encounter 08
+↓
+Encounter 09
+↓
+Encounter 10
+↓
+Boss Entrance
+↓
+Boss Arena
+↓
+KING SLIME
+↓
+Number Core Fragment #1
+↓
+Exit Portal
+
+==================================================
+MAP-BASED ROUTING
+==================================================
+
+ใช้ภาพ Map จริงในการวาง Route
+
+ออกแบบเส้นทางให้ Player
+เดินผ่านพื้นที่สำคัญของ Map
+
+ตัวอย่าง Flow ที่เหมาะ:
+
+เริ่มบริเวณบ้านด้านซ้ายบน
+
+↓
+เดินลงมาบริเวณสะพาน/ลำน้ำ
+
+↓
+ผ่านพื้นที่ป้ายคณิตศาสตร์
+
+↓
+เข้าสู่ใจกลางหมู่บ้าน
+
+↓
+ผ่านลานน้ำพุ
+
+↓
+เดินเข้าสู่พื้นที่ด้านขวา
+
+↓
+ผ่านเส้นทางก่อน Boss Arena
+
+↓
+เข้าสู่ลานวงกลมด้านขวาล่าง
+
+↓
+Boss Arena
+
+↓
+Portal ด้านขวาล่าง
+
+ปรับตำแหน่ง Encounter
+ให้เหมาะกับ Geometry จริงของ Map
+
+==================================================
+ENCOUNTER DATA
+==================================================
+
+สร้างระบบ Encounter แบบ Data-Driven
+
+ตัวอย่าง:
+
+interface EncounterConfig {
+  id: string;
+  x: number;
+  y: number;
+
+  triggerRadius: number;
+
+  gateId?: string;
+
+  requiredPreviousEncounter?: string;
+
+  completed: boolean;
+}
+
+สร้าง:
+
+E01
+E02
+E03
+E04
+E05
+E06
+E07
+E08
+E09
+E10
+
+==================================================
+ENCOUNTER ACTIVATION
+==================================================
+
+Encounter ไม่ควร Active ทั้งหมดพร้อมกัน
+
+ตัวอย่าง:
+
+E01 Active
+
+เมื่อ E01 Completed:
+E02 Active
+
+เมื่อ E02 Completed:
+E03 Active
+
+...
+
+เมื่อ E10 Completed:
+Boss Gate Unlock
+
+==================================================
+ENCOUNTER RULE
+==================================================
+
+เมื่อ Player เข้า Trigger ของ Active Encounter:
+
+1. หยุด Player
+2. Lock Movement
+3. เริ่ม Encounter
+4. Monster Combat System จะจัดการต่อภายหลัง
+
+เมื่อ Encounter Completed:
+
+1. mark completed = true
+2. unlock related gate
+3. activate next encounter
+4. return player control
+
+Encounter ที่ Completed แล้ว
+ห้าม Trigger ซ้ำใน Run เดียวกัน
+
+==================================================
+STAGE RESTART
+==================================================
+
+ถ้า Player ตาย:
+
+Restart Stage 1
+
+Reset:
+
+E01-E10 completed = false
+
+Progress Gates
+
+Boss Gate
+
+Boss State
+
+Portal State
+
+Player Spawn
+
+แต่ Question Generator
+ต้อง Generate โจทย์ใหม่
+
+ห้ามใช้โจทย์เดิมจาก Run ก่อน
+
+==================================================
+FOUNTAIN / MID-STAGE AREA
+==================================================
+
+พื้นที่น้ำพุกลาง Map
+ใช้เป็น Visual Rest Point
+
+ไม่ต้อง Heal Player อัตโนมัติ
+
+เพราะระบบ Heal ของเกมคือ:
+
+ตอบถูกติดต่อกัน 3 ครั้ง
+→ +1 HP
+
+Fountain เป็นเพียง:
+
+- Landmark
+- Story Position
+- Mid-stage Progress Marker
+
+==================================================
+BOSS ARENA
+==================================================
+
+Boss Arena คือ
+ลานวงกลมขนาดใหญ่ด้านขวาล่างของ Map
+
+ก่อน E10 Completed:
+
+Boss Arena Entrance
+ต้องยังไม่เปิด
+
+หลัง E10 Completed:
+
+Boss Gate Unlock
+
+Player เดินเข้าสู่ Boss Arena ได้
+
+เมื่อเข้า Boss Trigger:
+
+lock movement
+
+Boss System จะทำต่อใน Prompt Boss
+
+==================================================
+EXIT PORTAL
+==================================================
+
+Portal ด้านขวาล่าง
+
+ก่อน Boss ถูกกำจัด:
+
+Portal = inactive
+
+หลัง King Slime ถูกกำจัด:
+
+Portal = active
+
+แต่ Stage Clear Story
+จะจัดการในระบบถัดไป
+
+==================================================
+DEBUG MODE
+==================================================
+
+F2 เปิด/ปิด Debug Mode
+
+แสดง:
+
+GREEN
+Walkable
+
+RED
+Blocked
+
+YELLOW
+Interaction
+
+PURPLE
+Encounter Trigger
+
+ORANGE
+Progress Gate
+
+BLUE
+Player Position
+
+แสดง Encounter ID:
+
+E01
+E02
+...
+E10
+
+Debug Mode:
+
+OFF by default
+
+==================================================
+DEBUG INFORMATION
+==================================================
+
+เมื่อ Debug เปิด:
+
+แสดง:
+
+Player World X/Y
+Player Grid X/Y
+
+Current Encounter
+
+Next Encounter
+
+Gate State
+
+Boss Gate State
+
+==================================================
+VALIDATION
+==================================================
+
+ก่อนบอกว่างานเสร็จ:
+
+ทดสอบจริงว่า:
+
+1. Player เดินจาก Start ได้
+
+2. Player ไม่เดินทะลุ:
+น้ำ
+บ้าน
+ต้นไม้
+หิน
+รั้ว
+
+3. Player ไม่สามารถเดินไป Boss
+โดยไม่ผ่าน E01-E10
+
+4. E01-E10 สามารถ Trigger
+ตามลำดับได้
+
+5. เมื่อ Encounter Completed
+Gate เปิดจริง
+
+6. Player สามารถไปถึง Boss Arena
+หลัง E10 Completed
+
+7. Portal ยังไม่ Active
+ก่อน Boss Defeated
+
+8. Desktop Keyboard ใช้งานได้
+
+9. Mobile Joystick ใช้งานได้
+
+10. ไม่มี Console Error
+
+IMPORTANT:
+
+อย่าเพิ่ม Monster Combat จริง
+จนกว่า Map, Movement, Collision,
+Encounter Route และ Progress Gates
+ทำงานถูกต้องทั้งหมด
