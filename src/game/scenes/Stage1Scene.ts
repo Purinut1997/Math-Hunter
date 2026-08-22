@@ -12,6 +12,8 @@ import { MonsterSprite } from './MonsterSprite';
 import { CombatManager } from '../systems/CombatManager';
 import { EventBus, EVENTS } from '../EventBus';
 
+type DialogueLine = { speaker: string, text: string };
+
 type Direction = 'up' | 'down' | 'left' | 'right';
 
 export default class Stage1Scene extends Phaser.Scene {
@@ -19,6 +21,8 @@ export default class Stage1Scene extends Phaser.Scene {
   private mapImage!: Phaser.GameObjects.Image;
   private mapW = 0;
   private mapH = 0;
+  
+  private lordZeroImage: Phaser.GameObjects.Image | null = null;
 
   // Player
   private player!: Phaser.GameObjects.Sprite;
@@ -110,6 +114,9 @@ export default class Stage1Scene extends Phaser.Scene {
       frameHeight: 256
     });
 
+    // Lord Zero Silhouette
+    this.load.image('lord_zero_silhouette', 'assets/boss/lord_zero/lord_zero_silhouette.png');
+
     // Preload Thief Rat
     this.load.spritesheet('thief_rat_idle', 'assets/monsters/thief_rat/sheets_640/thief_rat_idle_640.png', { frameWidth: 640, frameHeight: 640 });
     this.load.spritesheet('thief_rat_attack', 'assets/monsters/thief_rat/sheets_640/thief_rat_attack_640.png', { frameWidth: 640, frameHeight: 640 });
@@ -154,6 +161,7 @@ export default class Stage1Scene extends Phaser.Scene {
     EventBus.on(EVENTS.ANSWER_SELECTED, this.handleAnswerSelected, this);
     EventBus.on(EVENTS.COMBAT_TIMEOUT, this.handleCombatTimeout, this);
     EventBus.on(EVENTS.RESTART_STAGE, this.restartStage, this);
+    EventBus.on(EVENTS.DIALOGUE_LINE_CHANGED, this.handleDialogueLineChanged, this);
 
     // --- Camera ---
     this.cameras.main.setBounds(0, 0, this.mapW, this.mapH);
@@ -680,6 +688,11 @@ export default class Stage1Scene extends Phaser.Scene {
             // Drop number core fragment if it's the boss
             if (activeMonster.config.monsterId === 'king_slime') {
               this.time.delayedCall(1000, () => {
+                this.endVSCombat();
+                this.combatManager.endEncounter();
+                this.inCombat = false;
+                this.movementLocked = true; // Lock player movement during loot drop
+                activeMonster.destroy(); // Remove boss from map
                 this.spawnBossLoot(activeMonster.x, activeMonster.y);
               });
             } else {
@@ -751,12 +764,43 @@ export default class Stage1Scene extends Phaser.Scene {
       ]);
 
       EventBus.once(EVENTS.DIALOGUE_CLOSED, () => {
-        loot.destroy();
-        this.endVSCombat();
-        this.combatManager.endEncounter();
-        EventBus.emit(EVENTS.SHOW_STAGE_CLEAR);
+        // Absorb the loot
+        this.tweens.add({
+          targets: loot,
+          y: y - 50,
+          alpha: 0,
+          duration: 500,
+          onComplete: () => {
+            loot.destroy();
+            this.movementLocked = false;
+            this.currentMonsterIndex++;
+            EventBus.emit(EVENTS.SHOW_STAGE_CLEAR);
+          }
+        });
       });
     });
+  }
+
+  private handleDialogueLineChanged(line: DialogueLine) {
+    if (line.speaker === "???") {
+      if (!this.lordZeroImage) {
+        this.lordZeroImage = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2, 'lord_zero_silhouette')
+          .setScrollFactor(0)
+          .setDepth(3000)
+          .setAlpha(0)
+          .setScale(1.2);
+        
+        this.tweens.add({ targets: this.lordZeroImage, alpha: 0.6, duration: 500 });
+        this.cameras.main.shake(1000, 0.005);
+      }
+    } else {
+      if (this.lordZeroImage) {
+        this.tweens.add({ targets: this.lordZeroImage, alpha: 0, duration: 500, onComplete: () => {
+          this.lordZeroImage?.destroy();
+          this.lordZeroImage = null;
+        }});
+      }
+    }
   }
 
   private endVSCombat() {
@@ -922,5 +966,6 @@ export default class Stage1Scene extends Phaser.Scene {
     EventBus.off(EVENTS.ANSWER_SELECTED, this.handleAnswerSelected, this);
     EventBus.off(EVENTS.COMBAT_TIMEOUT, this.handleCombatTimeout, this);
     EventBus.off(EVENTS.RESTART_STAGE, this.restartStage, this);
+    EventBus.off(EVENTS.DIALOGUE_LINE_CHANGED, this.handleDialogueLineChanged, this);
   }
 }

@@ -46,6 +46,9 @@ export class MainMenuScene {
 
             <!-- Secondary Buttons -->
             <div class="main-menu__buttons-secondary">
+              <button id="btn-tutorial" class="game-btn game-btn--small">
+                <span>📖 คู่มือ</span>
+              </button>
               <button id="btn-settings" class="game-btn game-btn--small">
                 <span>⚙️ ตั้งค่า</span>
               </button>
@@ -58,6 +61,22 @@ export class MainMenuScene {
           <!-- Developer Credit (bottom-left) -->
           <div class="main-menu__credit">
             <img src="assets/branding/developed-by-purinut.png" alt="Developed by Purinut"/>
+          </div>
+        </div>
+
+        <!-- Tutorial Modal -->
+        <div id="tutorial-modal" class="game-modal" style="display:none">
+          <div class="game-modal__box" style="max-width: 600px;">
+            <h2 class="game-modal__title">📖 คู่มือการเล่น</h2>
+            <div class="game-modal__content" style="text-align: left; padding: 20px; font-size: 1.1rem; line-height: 1.6;">
+              <p><strong>🕹️ การควบคุม (PC):</strong> ใช้ปุ่ม <code>W</code> <code>A</code> <code>S</code> <code>D</code> หรือปุ่มลูกศร เพื่อเดิน</p>
+              <p><strong>📱 การควบคุม (มือถือ):</strong> สัมผัสที่ครึ่งซ้ายของหน้าจอเพื่อใช้ Virtual Joystick บังคับตัวละคร</p>
+              <br/>
+              <p><strong>⚔️ การต่อสู้:</strong> เดินไปชนมอนสเตอร์เพื่อเข้าฉากต่อสู้ ระบบจะมีโจทย์คณิตศาสตร์ให้คิดเลข</p>
+              <p><strong>⏱️ เวลาจำกัด:</strong> รีบเลือกคำตอบที่ถูกต้องก่อนที่เวลาจะหมด (ดูจากหลอดเวลา)</p>
+              <p><strong>❤️ พลังชีวิต:</strong> หากตอบผิดหรือหมดเวลา พลังชีวิตจะลดลง หากหมดเกมจะจบลงทันที</p>
+            </div>
+            <button id="btn-tutorial-close" class="game-btn game-btn--primary">เข้าใจแล้ว!</button>
           </div>
         </div>
 
@@ -100,6 +119,15 @@ export class MainMenuScene {
     document.getElementById('btn-start')?.addEventListener('click', onStart);
     document.getElementById('btn-continue')?.addEventListener('click', onContinue);
     document.getElementById('btn-select-stage')?.addEventListener('click', onSelectStage);
+
+    document.getElementById('btn-tutorial')?.addEventListener('click', () => {
+      const modal = document.getElementById('tutorial-modal');
+      if (modal) modal.style.display = 'flex';
+    });
+    document.getElementById('btn-tutorial-close')?.addEventListener('click', () => {
+      const modal = document.getElementById('tutorial-modal');
+      if (modal) modal.style.display = 'none';
+    });
 
     document.getElementById('btn-settings')?.addEventListener('click', () => {
       const modal = document.getElementById('settings-modal');

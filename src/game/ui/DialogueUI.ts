@@ -76,17 +76,18 @@ export class DialogueUI {
 
     if (speakerEl) {
       if (line.speaker) {
-        speakerEl.innerText = line.speaker;
+        speakerEl.textContent = line.speaker;
         speakerEl.style.display = 'block';
       } else {
-        speakerEl.innerText = '';
         speakerEl.style.display = 'none';
       }
     }
 
     if (textEl) {
-      textEl.innerText = line.text;
+      textEl.innerHTML = line.text.replace(/\n/g, '<br/>');
     }
+
+    EventBus.emit(EVENTS.DIALOGUE_LINE_CHANGED, line);
   }
 
   private close() {
