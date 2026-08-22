@@ -8,12 +8,11 @@ export interface MathQuestion {
 }
 
 export class QuestionGenerator {
-  private static recentQuestions: string[] = [];
-  private static readonly MAX_RECENT = 15;
+  private static recentQuestions = new Set<string>();
 
   static generate(params: { grade: number, difficulty: Difficulty, topic?: string }): MathQuestion {
     let attempts = 0;
-    while (attempts < 50) {
+    while (attempts < 2000) {
       const q = params.topic === 'subtraction'
         ? this.generateSubtraction(params.grade, params.difficulty)
         : this.createQuestionForGrade(params.grade, params.difficulty);
@@ -24,16 +23,70 @@ export class QuestionGenerator {
       attempts++;
     }
     
-    // Fallback if somehow failed
-    const fallback = params.topic === 'subtraction'
-      ? this.generateSubtraction(params.grade, params.difficulty)
-      : this.createQuestionForGrade(params.grade, params.difficulty);
-    this.addRecentQuestion(fallback.id);
-    return fallback;
+    throw new Error('Unable to generate a unique valid question for this stage');
   }
 
   private static generateSubtraction(grade: number, difficulty: Difficulty): MathQuestion {
-    if (grade >= 5) {
+    if (grade === 5 && Math.random() > 0.5) {
+      const denominator = Math.floor(Math.random() * (difficulty === 'easy' ? 8 : 16)) + 5;
+      const b = Math.floor(Math.random() * (denominator - 2)) + 1;
+      const a = Math.floor(Math.random() * (denominator - b - 1)) + b + 1;
+      const correctNumerator = a - b;
+      const correct = `${correctNumerator}/${denominator}`;
+      const choices = new Set<string>([correct]);
+      for (const offset of [1, -1, 2, -2, 3, -3]) {
+        if (choices.size >= 4) break;
+        const candidate = correctNumerator + offset;
+        if (candidate > 0) choices.add(`${candidate}/${denominator}`);
+      }
+      return {
+        id: `sub:g5:fraction:${a}:${b}:${denominator}`,
+        question: `${a}/${denominator} − ${b}/${denominator} = ?`,
+        correctAnswer: correct,
+        choices: this.shuffleArray(Array.from(choices)),
+      };
+    }
+
+    if (grade === 6) {
+      if (Math.random() > 0.5) {
+        const bases = difficulty === 'easy' ? [100, 200, 400, 500] : [400, 500, 800, 1000, 2000];
+        const percents = [10, 20, 25, 30, 40, 50, 60, 75];
+        const base = bases[Math.floor(Math.random() * bases.length)];
+        const percent = percents[Math.floor(Math.random() * percents.length)];
+        const correct = base - (base * percent) / 100;
+        return {
+          id: `sub:g6:percent:${base}:${percent}`,
+          question: `${base} ลดลง ${percent}% เหลือเท่าไร?`,
+          correctAnswer: correct,
+          choices: this.generateNumberDistractors(correct, [10, -10, 20, -20, 100, -100]),
+        };
+      }
+
+      const leftRatio = Math.floor(Math.random() * 4) + 2;
+      const rightRatio = Math.floor(Math.random() * 5) + leftRatio + 1;
+      const multiplier = Math.floor(Math.random() * 6) + 3;
+      const left = leftRatio * multiplier;
+      const right = rightRatio * multiplier;
+      const removed = multiplier;
+      const newLeft = left - removed;
+      const divisor = this.gcd(newLeft, right);
+      const correct = `${newLeft / divisor}:${right / divisor}`;
+      const choices = new Set<string>([correct]);
+      for (const offset of [1, -1, 2, -2, 3, -3]) {
+        if (choices.size >= 4) break;
+        const candidateLeft = Math.max(1, newLeft + offset);
+        const candidateDivisor = this.gcd(candidateLeft, right);
+        choices.add(`${candidateLeft / candidateDivisor}:${right / candidateDivisor}`);
+      }
+      return {
+        id: `sub:g6:ratio:${left}:${right}:${removed}`,
+        question: `อัตราส่วน ${left}:${right} เมื่อลดจำนวนแรกลง ${removed} อัตราส่วนใหม่คือ?`,
+        correctAnswer: correct,
+        choices: this.shuffleArray(Array.from(choices)),
+      };
+    }
+
+    if (grade === 5) {
       const precision = grade >= 6 || difficulty !== 'easy' ? 2 : 1;
       const factor = 10 ** precision;
       const range = difficulty === 'easy' ? 100 : difficulty === 'normal' ? 1000 : 10000;
@@ -326,7 +379,7 @@ export class QuestionGenerator {
   }
 
   public static validateQuestion(q: MathQuestion): boolean {
-    if (this.recentQuestions.includes(q.id)) return false;
+    if (this.recentQuestions.has(q.id)) return false;
 
     const uniqueChoices = new Set(q.choices);
     if (uniqueChoices.size !== 4) return false;
@@ -338,13 +391,17 @@ export class QuestionGenerator {
   }
 
   private static addRecentQuestion(id: string) {
-    this.recentQuestions.push(id);
-    if (this.recentQuestions.length > this.MAX_RECENT) {
-      this.recentQuestions.shift();
-    }
+    this.recentQuestions.add(id);
   }
   
   public static resetRecentQuestions() {
-    this.recentQuestions = [];
+    this.recentQuestions = new Set<string>();
+  }
+
+  private static gcd(a: number, b: number): number {
+    let x = Math.abs(a);
+    let y = Math.abs(b);
+    while (y !== 0) [x, y] = [y, x % y];
+    return x || 1;
   }
 }

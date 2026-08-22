@@ -11,6 +11,7 @@ import {
 import { MonsterSprite } from './MonsterSprite';
 import { CombatManager } from '../systems/CombatManager';
 import { EventBus, EVENTS } from '../EventBus';
+import { QuestionGenerator } from '../systems/QuestionGenerator';
 
 type Direction = 'up' | 'down' | 'left' | 'right';
 type DialogueLine = { speaker?: string; text: string };
@@ -83,6 +84,7 @@ export default class Stage2Scene extends Phaser.Scene {
   }
 
   create() {
+    QuestionGenerator.resetRecentQuestions();
     this.removeEventBusListeners();
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.handleSceneShutdown, this);
 
@@ -627,6 +629,7 @@ export default class Stage2Scene extends Phaser.Scene {
   }
 
   public restartStage() {
+    QuestionGenerator.resetRecentQuestions();
     this.time.removeAllEvents();
     this.tweens.killAll();
     this.clearDialogueCloseHandlers();

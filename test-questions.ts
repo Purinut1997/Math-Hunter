@@ -39,6 +39,18 @@ function runTests() {
   if (failed > 0) {
     process.exit(1);
   }
+
+  console.log('\nChecking Stage 2 grade routing and no-repeat sessions...');
+  for (const grade of grades) {
+    QuestionGenerator.resetRecentQuestions();
+    const questionIds = new Set<string>();
+    for (let index = 0; index < 120; index++) {
+      const question = QuestionGenerator.generate({ grade, difficulty: 'normal', topic: 'subtraction' });
+      if (questionIds.has(question.id)) throw new Error(`Duplicate Stage 2 question for grade ${grade}: ${question.id}`);
+      questionIds.add(question.id);
+    }
+    console.log(`Grade ${grade}: ${questionIds.size}/120 unique questions`);
+  }
 }
 
 runTests();
