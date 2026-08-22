@@ -2,6 +2,7 @@ import { EventBus, EVENTS } from '../EventBus';
 
 export class StageClearUI {
   private element: HTMLElement | null = null;
+  private clearedStage = 1;
   
   constructor() {
     this.handleShow = this.handleShow.bind(this);
@@ -42,10 +43,10 @@ export class StageClearUI {
     this.element = document.getElementById('stage-clear-ui');
 
     document.getElementById('btn-back-stage-select')?.addEventListener('click', () => {
-      EventBus.emit(EVENTS.STAGE_CLEARED, 'select');
+      EventBus.emit(EVENTS.STAGE_CLEARED, { action: 'select', stage: this.clearedStage });
     });
     document.getElementById('btn-next-stage')?.addEventListener('click', () => {
-      EventBus.emit(EVENTS.STAGE_CLEARED, 'next');
+      EventBus.emit(EVENTS.STAGE_CLEARED, { action: 'next', stage: this.clearedStage });
     });
 
     EventBus.on(EVENTS.SHOW_STAGE_CLEAR, this.handleShow);
@@ -64,6 +65,7 @@ export class StageClearUI {
     if (this.element) {
       this.element.style.display = 'flex';
       const stage = data?.stage ?? 1;
+      this.clearedStage = stage;
       const subtitle = document.getElementById('stage-clear-subtitle');
       const fragment = document.getElementById('stage-clear-fragment');
       const message = document.getElementById('stage-clear-message');

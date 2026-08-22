@@ -144,19 +144,25 @@ function startStage2() {
   console.log(`Stage 2 started | Grade: ป.${currentGrade}`);
 }
 
-EventBus.on(EVENTS.STAGE_CLEARED, (action: 'next' | 'select') => {
-  const stage1 = game.scene.getScene('Stage1Scene') as import('./game/scenes/Stage1Scene').default;
-  if (stage1) {
-    stage1.scene.stop();
-  }
-  const stage2 = game.scene.getScene('Stage2Scene') as import('./game/scenes/Stage2Scene').default;
-  if (stage2) stage2.scene.stop();
+type StageClearAction = 'next' | 'select';
+type StageClearNavigation = { action: StageClearAction; stage: number };
 
-  // Reset Stage Clear UI
+EventBus.on(EVENTS.STAGE_CLEARED, (navigation: StageClearNavigation | StageClearAction) => {
+  // Keep accepting the old string payload so a click during a hot reload is still safe.
+  const action = typeof navigation === 'string' ? navigation : navigation.action;
+  const clearedStage = typeof navigation === 'string' ? activeStage : navigation.stage;
+
   stageClearUI.unmount();
-  
-  if (action === 'next' && activeStage === 1) startStage2();
-  else showMainMenu();
+
+  if (action === 'next' && clearedStage === 1) {
+    startStage2();
+    return;
+  }
+
+  if (game.scene.isActive('Stage1Scene')) game.scene.stop('Stage1Scene');
+  if (game.scene.isActive('Stage2Scene')) game.scene.stop('Stage2Scene');
+  activeStage = 0;
+  showMainMenu();
 });
 
 EventBus.on(EVENTS.SHOW_STAGE_CLEAR, (data?: { stage?: number }) => {
