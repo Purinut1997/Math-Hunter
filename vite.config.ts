@@ -8,6 +8,7 @@ const runtimeAssets = [
   'assets/backgrounds/opening_cinematic.gif',
   'assets/branding',
   'assets/maps/map1_v2.png',
+  'assets/maps/stage2_vanishing_forest.png',
   'assets/player/max_idle_640.png',
   'assets/player/max_walk_640.png',
   'assets/player/max_attack_640.png',
@@ -18,8 +19,12 @@ const runtimeAssets = [
   'assets/monsters/add_beetle/spritesheets',
   'assets/monsters/stone_golem/spritesheets',
   'assets/monsters/thief_rat/sheets_640',
+  'assets/monsters/thorn_beetle',
+  'assets/monsters/vine_spider',
   'assets/monsters/number_core_fragment_01/sheets',
+  'assets/items/number_core_fragment_02',
   'assets/boss/king_slime/sheets',
+  'assets/boss/void_stag',
   'assets/boss/lord_zero/lord_zero_silhouette.png',
 ];
 
