@@ -50,40 +50,6 @@ export class MainMenuScene {
                 <span class="game-btn__icon">▶</span>
                 <span>เล่นต่อ</span>
               </button>
-
-    const uiLayer = document.getElementById('ui-layer');
-    if (!uiLayer) return;
-
-    const html = `
-      <div id="main-menu" class="main-menu">
-        <!-- Animated Background -->
-        <div class="main-menu__bg">
-          <img src="assets/backgrounds/opening_cinematic.gif" 
-               alt="Math Hunter Background" class="main-menu__bg-img"/>
-        </div>
-
-        <!-- UI Layer -->
-        <div class="main-menu__ui">
-          <!-- Logo + Buttons panel (left side) -->
-          <div class="main-menu__panel">
-            <div class="main-menu__logo-wrap">
-              <img src="assets/branding/logo.png" alt="Math Hunter" class="main-menu__logo" onerror="this.style.display='none'; document.getElementById('main-menu-title').style.display='block'"/>
-              <div id="main-menu-title" class="main-menu__title-fallback" style="display:none">
-                <h1 class="main-menu__title">MATH HUNTER</h1>
-                <p class="main-menu__subtitle">ศึกพิชิตแก่นพลังตัวเลข</p>
-              </div>
-            </div>
-
-            <!-- Primary Buttons -->
-            <div class="main-menu__buttons">
-              <button id="btn-start" class="game-btn game-btn--primary">
-                <span class="game-btn__icon">⚔️</span>
-                <span>เริ่มผจญภัย</span>
-              </button>
-              <button id="btn-continue" class="game-btn game-btn--secondary">
-                <span class="game-btn__icon">▶</span>
-                <span>เล่นต่อ</span>
-              </button>
               <button id="btn-select-stage" class="game-btn game-btn--secondary">
                 <span class="game-btn__icon">🗺️</span>
                 <span>เลือกด่าน</span>
@@ -338,6 +304,8 @@ export class MainMenuScene {
     document.getElementById('stage-select-modal')?.addEventListener('click', (e) => {
       if (e.target === e.currentTarget) (e.currentTarget as HTMLElement).style.display = 'none';
     });
+  }
+
   unmount() {
     if (this.element) {
       this.element.remove();
