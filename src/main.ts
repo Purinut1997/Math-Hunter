@@ -50,6 +50,7 @@ let audioSettings = saveSystem.loadAudioSettings();
 let activeStage = 0;
 const BGM_KEYS = ['bgm', 'map2sound', 'map3sound'] as const;
 type BgmKey = typeof BGM_KEYS[number];
+let requestedBgm: BgmKey | null = null;
 
 function applyAudioSettings(settings = audioSettings) {
   audioSettings = settings;
@@ -58,18 +59,34 @@ function applyAudioSettings(settings = audioSettings) {
 }
 
 function playBgmWhenReady(track: BgmKey) {
+  requestedBgm = track;
+
   const play = () => {
-    if (!game.cache.audio.exists(track)) return;
+    if (requestedBgm !== track || !game.cache.audio.exists(track)) return;
 
-    for (const otherTrack of BGM_KEYS) {
-      if (otherTrack !== track) game.sound.stopByKey(otherTrack);
-    }
+    const startTrack = () => {
+      if (requestedBgm !== track) return;
 
-    const currentTrack = game.sound.get(track);
-    if (!currentTrack) {
-      game.sound.play(track, { loop: true, volume: 1 });
-    } else if (!currentTrack.isPlaying) {
-      currentTrack.play({ loop: true, volume: 1 });
+      for (const otherTrack of BGM_KEYS) {
+        if (otherTrack !== track) game.sound.stopByKey(otherTrack);
+      }
+
+      const currentTrack = game.sound.get(track);
+      if (!currentTrack) {
+        game.sound.play(track, { loop: true, volume: 1 });
+      } else if (!currentTrack.isPlaying) {
+        currentTrack.play({ loop: true, volume: 1 });
+      }
+    };
+
+    const soundManager = game.sound as unknown as { context?: AudioContext };
+    const audioContext = soundManager.context;
+    if (audioContext && audioContext.state !== 'running') {
+      void audioContext.resume()
+        .then(startTrack)
+        .catch(() => game.sound.once('unlocked', startTrack));
+    } else {
+      startTrack();
     }
   };
 
