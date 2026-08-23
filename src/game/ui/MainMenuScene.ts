@@ -127,7 +127,9 @@ export class MainMenuScene {
               <button id="btn-stage-3" class="game-btn game-btn--primary" ${!isStage3Unlocked ? 'disabled' : ''}>${!isStage3Unlocked ? '🔒 ' : ''}ด่าน 3 · ปราสาทแห่งศูนย์</button>
             </div>
             <button id="btn-stage-select-close" class="game-btn game-btn--secondary">ปิด</button>
-            <button id="btn-secret-unlock" style="position:absolute; bottom:5px; right:5px; background:none; border:none; cursor:pointer; font-size:16px; opacity:0.3;" title="Unlock Stages">🔑</button>
+            <div style="text-align: right; margin-top: 15px;">
+              <button id="btn-secret-unlock" style="background:#222; color:#ccc; border:1px solid #555; padding:5px 10px; border-radius:4px; font-size:12px; cursor:pointer;">🔑 ปลดล็อก (Dev)</button>
+            </div>
           </div>
         </div>
       </div>
@@ -154,10 +156,9 @@ export class MainMenuScene {
       if (!container) {
         container = document.createElement('div');
         container.id = 'secret-input-container';
-        container.style.position = 'absolute';
-        container.style.bottom = '5px';
-        container.style.right = '35px';
+        container.style.marginTop = '10px';
         container.style.display = 'flex';
+        container.style.justifyContent = 'flex-end';
         container.style.gap = '5px';
         
         const input = document.createElement('input');
