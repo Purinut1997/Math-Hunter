@@ -12,6 +12,11 @@ export class MainMenuScene {
     // Remove any existing menu
     this.unmount();
 
+    // Stage 2 was the final stage in older saves, so those players remain at
+    // progress value 2 even after clearing it. Treat that value as Stage 3
+    // access to migrate existing saves without asking players to replay.
+    const isStage3Unlocked = unlockedStage >= 2;
+
     const uiLayer = document.getElementById('ui-layer');
     if (!uiLayer) return;
 
@@ -119,7 +124,7 @@ export class MainMenuScene {
             <div class="game-modal__content stage-select-list">
               <button id="btn-stage-1" class="game-btn game-btn--primary">ด่าน 1 · หมู่บ้านบวกไว</button>
               <button id="btn-stage-2" class="game-btn game-btn--primary" ${unlockedStage < 2 ? 'disabled' : ''}>${unlockedStage < 2 ? '🔒 ' : ''}ด่าน 2 · ป่าลบเลือน</button>
-              <button id="btn-stage-3" class="game-btn game-btn--primary" ${unlockedStage < 3 ? 'disabled' : ''}>${unlockedStage < 3 ? '🔒 ' : ''}ด่าน 3 · ปราสาทแห่งศูนย์</button>
+              <button id="btn-stage-3" class="game-btn game-btn--primary" ${!isStage3Unlocked ? 'disabled' : ''}>${!isStage3Unlocked ? '🔒 ' : ''}ด่าน 3 · ปราสาทแห่งศูนย์</button>
             </div>
             <button id="btn-stage-select-close" class="game-btn game-btn--secondary">ปิด</button>
           </div>
@@ -139,7 +144,7 @@ export class MainMenuScene {
     });
     document.getElementById('btn-stage-1')?.addEventListener('click', () => onSelectStage(1));
     if (unlockedStage >= 2) document.getElementById('btn-stage-2')?.addEventListener('click', () => onSelectStage(2));
-    if (unlockedStage >= 3) document.getElementById('btn-stage-3')?.addEventListener('click', () => onSelectStage(3));
+    if (isStage3Unlocked) document.getElementById('btn-stage-3')?.addEventListener('click', () => onSelectStage(3));
     document.getElementById('btn-stage-select-close')?.addEventListener('click', () => {
       const modal = document.getElementById('stage-select-modal');
       if (modal) modal.style.display = 'none';
