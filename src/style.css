@@ -1091,7 +1091,25 @@ body {
   /* Combat UI Adjustments */
   .combat-ui {
     padding: 10px;
-    gap: 10px;
+    gap: 0;
+  }
+  .combat-ui__timer-container {
+    position: absolute;
+    top: max(8px, env(safe-area-inset-top));
+    left: 50%;
+    width: min(48vw, 400px);
+    margin: 0;
+    transform: translateX(-50%);
+  }
+  .combat-ui__timer-text {
+    margin-bottom: 2px;
+    font-size: clamp(16px, 4.5vh, 22px);
+  }
+  .combat-ui__top-bar {
+    position: absolute;
+    top: clamp(54px, 16vh, 84px);
+    left: max(10px, env(safe-area-inset-left));
+    right: max(10px, env(safe-area-inset-right));
   }
   .combat-ui__player-stats, .combat-ui__monster-stats {
     padding: 10px 15px;
@@ -1110,20 +1128,38 @@ body {
     transform: translateY(20px);
   }
   .combat-ui__question-area {
-    padding: 10px 30px;
-    margin-bottom: 10px;
+    position: absolute;
+    left: 50%;
+    bottom: clamp(78px, 22vh, 104px);
+    width: min(74vw, 720px);
+    max-height: 27vh;
+    margin: 0;
+    padding: 8px 24px;
+    overflow-y: auto;
+    transform: translateX(-50%);
   }
   .combat-ui__question-text {
-    font-size: 40px;
+    font-size: clamp(18px, 5vh, 30px);
+    line-height: 1.25;
+    letter-spacing: 1px;
+    overflow-wrap: anywhere;
+  }
+  .combat-ui__wrong-answer-text {
+    font-size: clamp(17px, 4.5vh, 28px);
+    line-height: 1.25;
   }
   .combat-ui__answers {
-    padding-bottom: 10px;
-    gap: 15px;
+    position: absolute;
+    right: max(10px, env(safe-area-inset-right));
+    bottom: max(8px, env(safe-area-inset-bottom));
+    left: max(10px, env(safe-area-inset-left));
+    gap: clamp(8px, 1.8vw, 15px);
+    padding: 0;
   }
   .combat-btn {
-    width: 100px;
-    height: 60px;
-    font-size: 28px;
+    width: clamp(74px, 12vw, 100px);
+    height: clamp(52px, 15vh, 60px);
+    font-size: clamp(22px, 6vh, 28px);
   }
 
   /* Dialogue Box */
