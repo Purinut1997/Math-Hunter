@@ -13,6 +13,7 @@ import { CombatManager } from '../systems/CombatManager';
 import { QuestionGenerator } from '../systems/QuestionGenerator';
 import { EventBus, EVENTS } from '../EventBus';
 import type { GameClearStats } from '../ui/EndCreditsUI';
+import { Stage3QuestionBank } from '../data/Stage3QuestionBank';
 
 type Direction = 'up' | 'down' | 'left' | 'right';
 type DialogueLine = { speaker?: string; text: string };
@@ -65,6 +66,7 @@ export default class Stage3Scene extends Phaser.Scene {
 
   preload() {
     this.load.image('map3', 'assets/maps/stage3_citadel_of_zero.png');
+    this.load.text('stage3-question-bank', 'assets/data/stage3_questions.md');
     preloadMaxSpritesheets(this);
     for (const id of Object.keys(STAGE3_MONSTER_NAMES)) {
       this.load.image(`stage3_${id}`, `assets/monsters/stage3/${id}.png`);
@@ -77,6 +79,7 @@ export default class Stage3Scene extends Phaser.Scene {
 
   create() {
     QuestionGenerator.resetRecentQuestions();
+    Stage3QuestionBank.loadMarkdown(this.cache.text.get('stage3-question-bank'));
     this.removeEventBusListeners();
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.handleSceneShutdown, this);
     this.startTime = Date.now();
@@ -91,7 +94,7 @@ export default class Stage3Scene extends Phaser.Scene {
     this.createPlayer();
     this.createInput();
 
-    this.combatManager = new CombatManager(this.grade, 'mixed');
+    this.combatManager = new CombatManager(this.grade, 'stage3');
     this.combatManager.resetRunStats();
     this.resetEncounterPool();
     this.createJoystick();
@@ -510,6 +513,7 @@ export default class Stage3Scene extends Phaser.Scene {
 
   public restartStage() {
     QuestionGenerator.resetRecentQuestions();
+    Stage3QuestionBank.resetSession();
     this.time.removeAllEvents();
     this.tweens.killAll();
     this.clearDialogueCloseHandlers();

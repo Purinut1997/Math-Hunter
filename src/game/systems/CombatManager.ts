@@ -23,15 +23,16 @@ export class CombatManager {
   private state: CombatState;
   private currentEncounter: EncounterConfig | null = null;
   private grade: number;
-  private topic: 'mixed' | 'subtraction' | 'stage2';
+  private topic: 'mixed' | 'subtraction' | 'stage2' | 'stage3';
   private timerInterval: ReturnType<typeof setInterval> | null = null;
   private timerStartDelay: ReturnType<typeof setTimeout> | null = null;
   private bossQuestionCount: number = 0;
+  private bossDifficultyPlan: Difficulty[] = [];
   private correctAnswers = 0;
   private wrongAnswers = 0;
   private bestStreak = 0;
 
-  constructor(grade: number, topic: 'mixed' | 'subtraction' | 'stage2' = 'mixed') {
+  constructor(grade: number, topic: 'mixed' | 'subtraction' | 'stage2' | 'stage3' = 'mixed') {
     this.grade = grade;
     this.topic = topic;
     this.state = {
@@ -62,6 +63,9 @@ export class CombatManager {
     this.state.isInputDisabled = false;
     this.state.correctAnswerWas = null;
     this.state.isBoss = encounter.monsterId === 'king_slime' || encounter.monsterId === 'void_stag' || encounter.monsterId === 'lord_zero';
+    this.bossDifficultyPlan = this.state.isBoss && this.topic === 'stage3'
+      ? this.createStage3BossPlan(encounter.maxHp)
+      : [];
     this.state.isTimeUp = false;
     this.state.timeRemaining = null;
     this.state.maxTime = null;
@@ -167,6 +171,9 @@ export class CombatManager {
     if (this.state.isBoss && this.topic === 'stage2') {
       difficulty = 'normal';
       this.bossQuestionCount++;
+    } else if (this.state.isBoss && this.topic === 'stage3') {
+      this.bossQuestionCount++;
+      difficulty = this.bossDifficultyPlan[(this.bossQuestionCount - 1) % this.bossDifficultyPlan.length] ?? 'hard';
     } else if (this.state.isBoss) {
       this.bossQuestionCount++;
       if (this.bossQuestionCount === 1) {
@@ -195,7 +202,9 @@ export class CombatManager {
     this.stopTimer();
     
     let timeLimit = 15;
-    if (this.topic === 'stage2') {
+    if (this.topic === 'stage3') {
+      timeLimit = 45;
+    } else if (this.topic === 'stage2') {
       timeLimit = 30;
     } else {
       if (difficulty === 'normal') timeLimit = 18;
@@ -232,6 +241,19 @@ export class CombatManager {
       clearInterval(this.timerInterval);
       this.timerInterval = null;
     }
+  }
+
+  private createStage3BossPlan(questionCount: number): Difficulty[] {
+    const hardCount = Math.floor(questionCount / 2) + 1;
+    const plan: Difficulty[] = [
+      ...Array.from({ length: hardCount }, () => 'hard' as Difficulty),
+      ...Array.from({ length: Math.max(0, questionCount - hardCount) }, () => 'normal' as Difficulty),
+    ];
+    for (let index = plan.length - 1; index > 0; index -= 1) {
+      const swapIndex = Math.floor(Math.random() * (index + 1));
+      [plan[index], plan[swapIndex]] = [plan[swapIndex], plan[index]];
+    }
+    return plan;
   }
 
   private broadcastState() {

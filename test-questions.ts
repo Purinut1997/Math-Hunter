@@ -1,5 +1,6 @@
 import { QuestionGenerator } from './src/game/systems/QuestionGenerator.ts';
 import { Stage2QuestionBank } from './src/game/data/Stage2QuestionBank.ts';
+import { Stage3QuestionBank } from './src/game/data/Stage3QuestionBank.ts';
 import { readFileSync } from 'node:fs';
 
 function runTests() {
@@ -64,6 +65,29 @@ function runTests() {
         questionTexts.add(question.question);
       }
       console.log(`Grade ${grade} ${difficulty}: pool ${Stage2QuestionBank.getPoolSize(grade, difficulty)}, sampled ${questionIds.size} unique`);
+    }
+  }
+
+  console.log('\nChecking Stage 3 document bank, grade routing, and no-repeat sessions...');
+  Stage3QuestionBank.loadMarkdown(readFileSync('./public/assets/data/stage3_questions.md', 'utf8'));
+  for (const grade of grades) {
+    for (const difficulty of ['normal', 'hard'] as const) {
+      Stage3QuestionBank.resetSession();
+      const sampleSize = difficulty === 'hard' ? 12 : 20;
+      const questionIds = new Set<string>();
+      const questionTexts = new Set<string>();
+      for (let index = 0; index < sampleSize; index++) {
+        const question = QuestionGenerator.generate({ grade, difficulty, topic: 'stage3' });
+        if (questionIds.has(question.id) || questionTexts.has(question.question)) {
+          throw new Error(`Duplicate Stage 3 question for grade ${grade} ${difficulty}: ${question.id}`);
+        }
+        if (new Set(question.choices).size !== 4 || question.choices.filter(choice => choice === question.correctAnswer).length !== 1) {
+          throw new Error(`Invalid Stage 3 choices for grade ${grade} ${difficulty}: ${question.id}`);
+        }
+        questionIds.add(question.id);
+        questionTexts.add(question.question);
+      }
+      console.log(`Grade ${grade} ${difficulty}: pool ${Stage3QuestionBank.getPoolSize(grade, difficulty)}, sampled ${questionIds.size} unique`);
     }
   }
 }

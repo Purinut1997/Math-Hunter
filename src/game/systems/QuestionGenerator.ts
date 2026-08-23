@@ -1,4 +1,5 @@
 import { Stage2QuestionBank } from '../data/Stage2QuestionBank.ts';
+import { Stage3QuestionBank } from '../data/Stage3QuestionBank.ts';
 
 export type Difficulty = 'easy' | 'normal' | 'hard';
 
@@ -15,6 +16,11 @@ export class QuestionGenerator {
   static generate(params: { grade: number, difficulty: Difficulty, topic?: string }): MathQuestion {
     if (params.topic === 'stage2') {
       const question = Stage2QuestionBank.generate(params.grade, params.difficulty);
+      this.addRecentQuestion(question.id);
+      return question;
+    }
+    if (params.topic === 'stage3') {
+      const question = Stage3QuestionBank.generate(params.grade, params.difficulty);
       this.addRecentQuestion(question.id);
       return question;
     }
