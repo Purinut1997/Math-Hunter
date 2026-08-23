@@ -195,10 +195,13 @@ export class CombatManager {
     this.stopTimer();
     
     let timeLimit = 15;
-    if (difficulty === 'normal') timeLimit = 18;
-    else if (difficulty === 'hard') timeLimit = 22;
-
-    if (this.grade === 3) timeLimit += 2;
+    if (this.topic === 'stage2') {
+      timeLimit = 30;
+    } else {
+      if (difficulty === 'normal') timeLimit = 18;
+      else if (difficulty === 'hard') timeLimit = 22;
+      if (this.grade === 3) timeLimit += 2;
+    }
 
     this.state.maxTime = timeLimit;
     this.state.timeRemaining = timeLimit;
