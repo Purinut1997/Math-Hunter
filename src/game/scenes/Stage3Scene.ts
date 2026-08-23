@@ -435,7 +435,7 @@ export default class Stage3Scene extends Phaser.Scene {
     }
     const graphics = this.debugGraphics!;
     graphics.fillStyle(0xff0000, 0.12).fillRect(0, 0, this.mapW, this.mapH);
-    graphics.lineStyle(Math.max(72, this.mapH * 0.11), 0x00ff00, 0.32).beginPath();
+    graphics.lineStyle(76, 0x00ff00, 0.32).beginPath();
     graphics.moveTo(STAGE3_ROUTE[0].nx * this.mapW, STAGE3_ROUTE[0].ny * this.mapH);
     for (let index = 1; index < STAGE3_ROUTE.length; index += 1) {
       graphics.lineTo(STAGE3_ROUTE[index].nx * this.mapW, STAGE3_ROUTE[index].ny * this.mapH);
