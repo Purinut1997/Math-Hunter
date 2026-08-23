@@ -4,7 +4,7 @@ import { dirname, resolve } from 'node:path';
 
 const runtimeAssets = [
   'favicon.svg',
-  'assets/audio/bgm.m4a',
+  'assets/audio',
   'assets/backgrounds/opening_cinematic.gif',
   'assets/branding',
   'assets/maps/map1_v2.png',
