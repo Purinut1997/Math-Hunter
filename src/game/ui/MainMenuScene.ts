@@ -147,21 +147,61 @@ export class MainMenuScene {
     document.getElementById('btn-stage-2')?.addEventListener('click', () => onSelectStage(2));
     document.getElementById('btn-stage-3')?.addEventListener('click', () => onSelectStage(3));
     
-    document.getElementById('btn-secret-unlock')?.addEventListener('click', () => {
-      const pwd = prompt('รหัสผ่านสำหรับทดสอบ:');
-      if (pwd === '2540') {
-        const btn2 = document.getElementById('btn-stage-2') as HTMLButtonElement;
-        const btn3 = document.getElementById('btn-stage-3') as HTMLButtonElement;
-        if (btn2) {
-          btn2.disabled = false;
-          btn2.innerText = 'ด่าน 2 · ป่าลบเลือน';
-        }
-        if (btn3) {
-          btn3.disabled = false;
-          btn3.innerText = 'ด่าน 3 · ปราสาทแห่งศูนย์';
-        }
-      } else if (pwd !== null) {
-        alert('รหัสผ่านไม่ถูกต้อง');
+    const secretUnlockBtn = document.getElementById('btn-secret-unlock');
+    secretUnlockBtn?.addEventListener('click', () => {
+      // Create an inline input if it doesn't exist
+      let container = document.getElementById('secret-input-container');
+      if (!container) {
+        container = document.createElement('div');
+        container.id = 'secret-input-container';
+        container.style.position = 'absolute';
+        container.style.bottom = '5px';
+        container.style.right = '35px';
+        container.style.display = 'flex';
+        container.style.gap = '5px';
+        
+        const input = document.createElement('input');
+        input.type = 'password';
+        input.id = 'secret-pwd';
+        input.style.width = '60px';
+        input.style.background = '#111';
+        input.style.color = 'white';
+        input.style.border = '1px solid #555';
+        input.style.borderRadius = '4px';
+        input.style.padding = '2px 4px';
+        
+        const btn = document.createElement('button');
+        btn.innerText = 'OK';
+        btn.style.background = '#333';
+        btn.style.color = 'white';
+        btn.style.border = '1px solid #555';
+        btn.style.borderRadius = '4px';
+        btn.style.cursor = 'pointer';
+        
+        btn.onclick = () => {
+          if (input.value === '2540') {
+            const btn2 = document.getElementById('btn-stage-2') as HTMLButtonElement;
+            const btn3 = document.getElementById('btn-stage-3') as HTMLButtonElement;
+            if (btn2) {
+              btn2.disabled = false;
+              btn2.innerText = 'ด่าน 2 · ป่าลบเลือน';
+            }
+            if (btn3) {
+              btn3.disabled = false;
+              btn3.innerText = 'ด่าน 3 · ปราสาทแห่งศูนย์';
+            }
+            container!.style.display = 'none';
+          } else {
+            alert('รหัสผิด!');
+            container!.style.display = 'none';
+          }
+        };
+        
+        container.appendChild(input);
+        container.appendChild(btn);
+        secretUnlockBtn!.parentElement!.appendChild(container);
+      } else {
+        container.style.display = container.style.display === 'none' ? 'flex' : 'none';
       }
     });
     document.getElementById('btn-stage-select-close')?.addEventListener('click', () => {
