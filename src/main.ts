@@ -58,6 +58,9 @@ function applyAudioSettings(settings = audioSettings) {
   game.sound.volume = settings.bgmVolume / 100;
 }
 
+let activeBgmSound: Phaser.Sound.BaseSound | null = null;
+let activeBgmKey: string | null = null;
+
 function playBgmWhenReady(track: BgmKey) {
   requestedBgm = track;
 
@@ -66,17 +69,27 @@ function playBgmWhenReady(track: BgmKey) {
 
     const startTrack = () => {
       if (requestedBgm !== track) return;
+      
+      if (activeBgmKey === track && activeBgmSound && activeBgmSound.isPlaying) {
+        return; // Already playing the requested track
+      }
 
+      // Stop and destroy the previous track if any
+      if (activeBgmSound) {
+        activeBgmSound.stop();
+        activeBgmSound.destroy();
+        activeBgmSound = null;
+      }
+
+      // Stop any other lingering BGM tracks just in case
       for (const otherTrack of BGM_KEYS) {
-        if (otherTrack !== track) game.sound.stopByKey(otherTrack);
+        game.sound.stopByKey(otherTrack);
       }
 
-      const currentTrack = game.sound.get(track);
-      if (!currentTrack) {
-        game.sound.play(track, { loop: true, volume: 1 });
-      } else if (!currentTrack.isPlaying) {
-        currentTrack.play({ loop: true, volume: 1 });
-      }
+      // Create and play the new track
+      activeBgmSound = game.sound.add(track, { loop: true, volume: 1 });
+      activeBgmSound.play();
+      activeBgmKey = track;
     };
 
     const soundManager = game.sound as unknown as { context?: AudioContext };
