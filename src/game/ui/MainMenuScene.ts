@@ -127,6 +127,7 @@ export class MainMenuScene {
               <button id="btn-stage-3" class="game-btn game-btn--primary" ${!isStage3Unlocked ? 'disabled' : ''}>${!isStage3Unlocked ? '🔒 ' : ''}ด่าน 3 · ปราสาทแห่งศูนย์</button>
             </div>
             <button id="btn-stage-select-close" class="game-btn game-btn--secondary">ปิด</button>
+            <button id="btn-secret-unlock" style="position:absolute; bottom:5px; right:5px; background:none; border:none; cursor:pointer; font-size:16px; opacity:0.3;" title="Unlock Stages">🔑</button>
           </div>
         </div>
       </div>
@@ -143,8 +144,26 @@ export class MainMenuScene {
       if (modal) modal.style.display = 'flex';
     });
     document.getElementById('btn-stage-1')?.addEventListener('click', () => onSelectStage(1));
-    if (unlockedStage >= 2) document.getElementById('btn-stage-2')?.addEventListener('click', () => onSelectStage(2));
-    if (isStage3Unlocked) document.getElementById('btn-stage-3')?.addEventListener('click', () => onSelectStage(3));
+    document.getElementById('btn-stage-2')?.addEventListener('click', () => onSelectStage(2));
+    document.getElementById('btn-stage-3')?.addEventListener('click', () => onSelectStage(3));
+    
+    document.getElementById('btn-secret-unlock')?.addEventListener('click', () => {
+      const pwd = prompt('รหัสผ่านสำหรับทดสอบ:');
+      if (pwd === '2540') {
+        const btn2 = document.getElementById('btn-stage-2') as HTMLButtonElement;
+        const btn3 = document.getElementById('btn-stage-3') as HTMLButtonElement;
+        if (btn2) {
+          btn2.disabled = false;
+          btn2.innerText = 'ด่าน 2 · ป่าลบเลือน';
+        }
+        if (btn3) {
+          btn3.disabled = false;
+          btn3.innerText = 'ด่าน 3 · ปราสาทแห่งศูนย์';
+        }
+      } else if (pwd !== null) {
+        alert('รหัสผ่านไม่ถูกต้อง');
+      }
+    });
     document.getElementById('btn-stage-select-close')?.addEventListener('click', () => {
       const modal = document.getElementById('stage-select-modal');
       if (modal) modal.style.display = 'none';
