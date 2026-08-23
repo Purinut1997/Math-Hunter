@@ -15,6 +15,9 @@ export const STAGE2_ENCOUNTERS: EncounterConfig[] = [
 ];
 
 type Point = { nx: number; ny: number };
+const STAGE2_MAP_WIDTH = 1817;
+const STAGE2_MAP_HEIGHT = 866;
+const ENCOUNTER_WALKABLE_RADIUS = 82;
 
 // Center line of the single intended route. A distance check creates a soft
 // walkable corridor that follows the painted road without invisible hard turns.
@@ -37,14 +40,13 @@ export const STAGE2_ROUTE: Point[] = [
   { nx: 0.225, ny: 0.72 },
   { nx: 0.235, ny: 0.755 },
   { nx: 0.25, ny: 0.80 },
-  { nx: 0.32, ny: 0.845 },
-  { nx: 0.39, ny: 0.84 },
-  { nx: 0.41, ny: 0.85 },
-  { nx: 0.49, ny: 0.83 },
-  { nx: 0.56, ny: 0.79 },
-  { nx: 0.60, ny: 0.74 },
-  { nx: 0.66, ny: 0.685 },
-  { nx: 0.73, ny: 0.65 },
+  { nx: 0.32, ny: 0.865 },
+  { nx: 0.41, ny: 0.87 },
+  { nx: 0.49, ny: 0.85 },
+  { nx: 0.56, ny: 0.81 },
+  { nx: 0.60, ny: 0.76 },
+  { nx: 0.66, ny: 0.70 },
+  { nx: 0.73, ny: 0.66 },
   { nx: 0.83, ny: 0.63 },
   { nx: 0.86, ny: 0.68 },
   { nx: 0.87, ny: 0.77 },
@@ -63,6 +65,11 @@ function distanceToSegment(px: number, py: number, a: Point, b: Point) {
 }
 
 export function isStage2Walkable(nx: number, ny: number) {
+  const insideEncounterArena = STAGE2_ENCOUNTERS.some(encounter => Math.hypot(
+    (nx - encounter.nx) * STAGE2_MAP_WIDTH,
+    (ny - encounter.ny) * STAGE2_MAP_HEIGHT,
+  ) <= ENCOUNTER_WALKABLE_RADIUS);
+  if (insideEncounterArena) return true;
   if (Math.hypot(nx - 0.825, ny - 0.63) <= 0.115) return true;
   if (Math.hypot(nx - STAGE2_SHRINE.nx, ny - STAGE2_SHRINE.ny) <= 0.075) return true;
   for (let index = 0; index < STAGE2_ROUTE.length - 1; index += 1) {
