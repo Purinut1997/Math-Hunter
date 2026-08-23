@@ -53,84 +53,52 @@ let activeStage = 0;
 // BGM SYSTEM
 // ===========================
 type BgmKey = 'BG' | 'The_Sun_Over_Numeria' | 'map2sound' | 'map3sound';
+const BGM_KEYS: BgmKey[] = ['BG', 'The_Sun_Over_Numeria', 'map2sound', 'map3sound'];
+
 let activeBgmSound: Phaser.Sound.BaseSound | null = null;
 let activeBgmKey: BgmKey | null = null;
-let pendingBgmKey: BgmKey | null = null;
-
-// Listen for any user gesture to unlock AudioContext (required on mobile)
-const tryUnlockAudio = () => {
-  const soundManager = game.sound as unknown as { context?: AudioContext };
-  const ctx = soundManager.context;
-  if (ctx && ctx.state !== 'running') {
-    void ctx.resume().then(() => {
-      if (pendingBgmKey) {
-        doPlayBgm(pendingBgmKey);
-        pendingBgmKey = null;
-      }
-    });
-  } else {
-    if (pendingBgmKey) {
-      doPlayBgm(pendingBgmKey);
-      pendingBgmKey = null;
-    }
-  }
-};
-document.addEventListener('click', tryUnlockAudio);
-document.addEventListener('touchstart', tryUnlockAudio);
 
 function doPlayBgm(track: BgmKey) {
-  // If already playing this track, do nothing
   if (activeBgmKey === track && activeBgmSound && activeBgmSound.isPlaying) return;
 
-  // Stop and destroy previous track
   if (activeBgmSound) {
-    try { activeBgmSound.stop(); } catch (_) { /* ignore */ }
-    try { activeBgmSound.destroy(); } catch (_) { /* ignore */ }
+    activeBgmSound.stop();
+    activeBgmSound.destroy();
     activeBgmSound = null;
-    activeBgmKey = null;
+  }
+  for (const k of BGM_KEYS) {
+    game.sound.stopByKey(k);
   }
 
-  // Create new track and play
-  if (game.cache.audio.exists(track)) {
-    const snd = game.sound.add(track, { loop: true, volume: 1 });
-    snd.play();
-    activeBgmSound = snd;
-    activeBgmKey = track;
-  } else {
-    console.warn(`BGM track not in cache: ${track}`);
-  }
+  activeBgmSound = game.sound.add(track, { loop: true });
+  activeBgmSound.play();
+  activeBgmKey = track;
+  applyAudioSettings();
 }
 
 function playBgmWhenReady(track: BgmKey) {
-  const soundManager = game.sound as unknown as { context?: AudioContext };
-  const ctx = soundManager.context;
-  const isLocked = ctx && ctx.state !== 'running';
+  const tryPlay = () => {
+    // Let Phaser handle the AudioContext locking automatically.
+    // Calling play() while locked will queue it to play upon unlock.
+    doPlayBgm(track);
+  };
 
   if (game.cache.audio.exists(track)) {
-    if (isLocked) {
-      pendingBgmKey = track;
-      void ctx!.resume().then(() => {
-        doPlayBgm(track);
-        pendingBgmKey = null;
-      });
-    } else {
-      doPlayBgm(track);
-    }
+    tryPlay();
   } else {
-    // Assets not loaded yet — wait for ready event
-    pendingBgmKey = track;
-    game.events.once('math-hunter:assets-ready', () => {
-      playBgmWhenReady(track);
-    });
+    game.events.once('math-hunter:assets-ready', tryPlay);
   }
 }
 
 function applyAudioSettings(settings = audioSettings) {
   audioSettings = settings;
   saveSystem.saveAudioSettings(settings.bgmVolume, settings.sfxVolume);
-  // Apply volume to the active sound directly, not game.sound.volume (which can silence everything)
+  
+  // Set global volume (this will affect both BGM and SFX by default)
+  game.sound.volume = settings.bgmVolume / 100;
+  
   if (activeBgmSound && 'setVolume' in activeBgmSound) {
-    (activeBgmSound as Phaser.Sound.WebAudioSound).setVolume(settings.bgmVolume / 100);
+    (activeBgmSound as any).setVolume(settings.bgmVolume / 100);
   }
 }
 
