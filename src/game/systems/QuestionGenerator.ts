@@ -1,3 +1,5 @@
+import { Stage2QuestionBank } from '../data/Stage2QuestionBank.ts';
+
 export type Difficulty = 'easy' | 'normal' | 'hard';
 
 export interface MathQuestion {
@@ -11,6 +13,12 @@ export class QuestionGenerator {
   private static recentQuestions = new Set<string>();
 
   static generate(params: { grade: number, difficulty: Difficulty, topic?: string }): MathQuestion {
+    if (params.topic === 'stage2') {
+      const question = Stage2QuestionBank.generate(params.grade, params.difficulty);
+      this.addRecentQuestion(question.id);
+      return question;
+    }
+
     let attempts = 0;
     while (attempts < 2000) {
       const q = params.topic === 'subtraction'

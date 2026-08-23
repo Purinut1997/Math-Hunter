@@ -1,4 +1,6 @@
 import { QuestionGenerator } from './src/game/systems/QuestionGenerator.ts';
+import { Stage2QuestionBank } from './src/game/data/Stage2QuestionBank.ts';
+import { readFileSync } from 'node:fs';
 
 function runTests() {
   console.log('Running 1000 Question Generations Across All Grades...');
@@ -40,16 +42,29 @@ function runTests() {
     process.exit(1);
   }
 
-  console.log('\nChecking Stage 2 grade routing and no-repeat sessions...');
+  console.log('\nChecking Stage 2 document bank, grade routing, and no-repeat sessions...');
+  Stage2QuestionBank.loadMarkdown(readFileSync('./public/assets/data/stage2_questions.md', 'utf8'));
   for (const grade of grades) {
-    QuestionGenerator.resetRecentQuestions();
-    const questionIds = new Set<string>();
-    for (let index = 0; index < 120; index++) {
-      const question = QuestionGenerator.generate({ grade, difficulty: 'normal', topic: 'subtraction' });
-      if (questionIds.has(question.id)) throw new Error(`Duplicate Stage 2 question for grade ${grade}: ${question.id}`);
-      questionIds.add(question.id);
+    for (const difficulty of ['easy', 'normal'] as const) {
+      Stage2QuestionBank.resetSession();
+      const questionIds = new Set<string>();
+      const questionTexts = new Set<string>();
+      for (let index = 0; index < 14; index++) {
+        const question = QuestionGenerator.generate({ grade, difficulty, topic: 'stage2' });
+        if (questionIds.has(question.id) || questionTexts.has(question.question)) {
+          throw new Error(`Duplicate Stage 2 question for grade ${grade} ${difficulty}: ${question.id}`);
+        }
+        if (!question.choices.includes(question.correctAnswer)) {
+          throw new Error(`Missing correct choice for grade ${grade} ${difficulty}: ${question.id}`);
+        }
+        if (new Set(question.choices).size !== 4 || question.choices.filter(choice => choice === question.correctAnswer).length !== 1) {
+          throw new Error(`Invalid Stage 2 choices for grade ${grade} ${difficulty}: ${question.id}`);
+        }
+        questionIds.add(question.id);
+        questionTexts.add(question.question);
+      }
+      console.log(`Grade ${grade} ${difficulty}: pool ${Stage2QuestionBank.getPoolSize(grade, difficulty)}, sampled ${questionIds.size} unique`);
     }
-    console.log(`Grade ${grade}: ${questionIds.size}/120 unique questions`);
   }
 }
 

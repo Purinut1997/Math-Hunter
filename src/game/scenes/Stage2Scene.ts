@@ -12,6 +12,7 @@ import { MonsterSprite } from './MonsterSprite';
 import { CombatManager } from '../systems/CombatManager';
 import { EventBus, EVENTS } from '../EventBus';
 import { QuestionGenerator } from '../systems/QuestionGenerator';
+import { Stage2QuestionBank } from '../data/Stage2QuestionBank';
 
 type Direction = 'up' | 'down' | 'left' | 'right';
 type DialogueLine = { speaker?: string; text: string };
@@ -62,6 +63,7 @@ export default class Stage2Scene extends Phaser.Scene {
 
   preload() {
     this.load.image('map2', 'assets/maps/stage2_vanishing_forest.png');
+    this.load.text('stage2-question-bank', 'assets/data/stage2_questions.md');
     preloadMaxSpritesheets(this);
 
     this.load.spritesheet('thief_rat_idle', 'assets/monsters/thief_rat/sheets_640/thief_rat_idle_640.png', { frameWidth: 640, frameHeight: 640 });
@@ -85,6 +87,7 @@ export default class Stage2Scene extends Phaser.Scene {
 
   create() {
     QuestionGenerator.resetRecentQuestions();
+    Stage2QuestionBank.loadMarkdown(this.cache.text.get('stage2-question-bank'));
     this.removeEventBusListeners();
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.handleSceneShutdown, this);
 
@@ -122,7 +125,7 @@ export default class Stage2Scene extends Phaser.Scene {
       this.debugMode = !this.debugMode;
     });
 
-    this.combatManager = new CombatManager(this.grade, 'subtraction');
+    this.combatManager = new CombatManager(this.grade, 'stage2');
     this.spawnMonsters();
     this.createShrineEffects();
     this.createJoystick();
@@ -297,7 +300,7 @@ export default class Stage2Scene extends Phaser.Scene {
       this.hasSeenFirstCombat = true;
       this.movementLocked = true;
       EventBus.emit(EVENTS.SHOW_DIALOGUE, [
-        { speaker: 'Neo', text: 'ใช้การลบทำให้ค่าของศัตรูลดลงจนเหลือศูนย์!' },
+        { speaker: 'Neo', text: 'ตอบโจทย์คณิตศาสตร์ให้ถูกต้อง เพื่อลดพลังของศัตรูจนเหลือศูนย์!' },
       ] satisfies DialogueLine[]);
       this.onceDialogueClosed(() => this.openCombat(monster));
       return;
@@ -630,6 +633,7 @@ export default class Stage2Scene extends Phaser.Scene {
 
   public restartStage() {
     QuestionGenerator.resetRecentQuestions();
+    Stage2QuestionBank.resetSession();
     this.time.removeAllEvents();
     this.tweens.killAll();
     this.clearDialogueCloseHandlers();

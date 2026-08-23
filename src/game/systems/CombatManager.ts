@@ -23,7 +23,7 @@ export class CombatManager {
   private state: CombatState;
   private currentEncounter: EncounterConfig | null = null;
   private grade: number;
-  private topic: 'mixed' | 'subtraction';
+  private topic: 'mixed' | 'subtraction' | 'stage2';
   private timerInterval: ReturnType<typeof setInterval> | null = null;
   private timerStartDelay: ReturnType<typeof setTimeout> | null = null;
   private bossQuestionCount: number = 0;
@@ -31,7 +31,7 @@ export class CombatManager {
   private wrongAnswers = 0;
   private bestStreak = 0;
 
-  constructor(grade: number, topic: 'mixed' | 'subtraction' = 'mixed') {
+  constructor(grade: number, topic: 'mixed' | 'subtraction' | 'stage2' = 'mixed') {
     this.grade = grade;
     this.topic = topic;
     this.state = {
@@ -164,7 +164,10 @@ export class CombatManager {
     
     let difficulty = this.currentEncounter.difficulty;
 
-    if (this.state.isBoss) {
+    if (this.state.isBoss && this.topic === 'stage2') {
+      difficulty = 'normal';
+      this.bossQuestionCount++;
+    } else if (this.state.isBoss) {
       this.bossQuestionCount++;
       if (this.bossQuestionCount === 1) {
         difficulty = 'easy';

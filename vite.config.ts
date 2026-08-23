@@ -10,6 +10,7 @@ const runtimeAssets = [
   'assets/maps/map1_v2.png',
   'assets/maps/stage2_vanishing_forest.png',
   'assets/maps/stage3_citadel_of_zero.png',
+  'assets/data/stage2_questions.md',
   'assets/player/max_idle_640.png',
   'assets/player/max_walk_640.png',
   'assets/player/max_attack_640.png',
