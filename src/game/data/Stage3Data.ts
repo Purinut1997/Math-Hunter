@@ -12,9 +12,9 @@ export const STAGE3_PLAYER_START: Stage3Point = point(160, 675);
 export const STAGE3_FRAGMENT_PEDESTAL: Stage3Point = point(1580, 115);
 
 export const STAGE3_ROUTE: Stage3Point[] = [
-  STAGE3_PLAYER_START,
-  point(260, 675),
-  point(360, 675),
+  point(160, 705),
+  point(260, 700),
+  point(360, 685),
   point(440, 660),
   point(515, 650),
   point(555, 600),
