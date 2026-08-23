@@ -48,76 +48,94 @@ const gradeSelection = new GradeSelectionScene();
 let currentGrade: GradeLevel = saveSystem.loadGrade();
 let audioSettings = saveSystem.loadAudioSettings();
 let activeStage = 0;
-const BGM_KEYS = ['bgm', 'BG', 'The_Sun_Over_Numeria', 'map2sound', 'map3sound'] as const;
-type BgmKey = typeof BGM_KEYS[number];
-let requestedBgm: BgmKey | null = null;
+
+// ===========================
+// BGM SYSTEM
+// ===========================
+type BgmKey = 'BG' | 'The_Sun_Over_Numeria' | 'map2sound' | 'map3sound';
+let activeBgmSound: Phaser.Sound.BaseSound | null = null;
+let activeBgmKey: BgmKey | null = null;
+let pendingBgmKey: BgmKey | null = null;
+let audioUnlocked = false;
+
+// Listen for any user gesture to unlock AudioContext (required on mobile)
+const tryUnlockAudio = () => {
+  const soundManager = game.sound as unknown as { context?: AudioContext };
+  const ctx = soundManager.context;
+  if (ctx && ctx.state !== 'running') {
+    void ctx.resume().then(() => {
+      audioUnlocked = true;
+      if (pendingBgmKey) {
+        doPlayBgm(pendingBgmKey);
+        pendingBgmKey = null;
+      }
+    });
+  } else {
+    audioUnlocked = true;
+    if (pendingBgmKey) {
+      doPlayBgm(pendingBgmKey);
+      pendingBgmKey = null;
+    }
+  }
+};
+document.addEventListener('click', tryUnlockAudio);
+document.addEventListener('touchstart', tryUnlockAudio);
+
+function doPlayBgm(track: BgmKey) {
+  // If already playing this track, do nothing
+  if (activeBgmKey === track && activeBgmSound && activeBgmSound.isPlaying) return;
+
+  // Stop and destroy previous track
+  if (activeBgmSound) {
+    try { activeBgmSound.stop(); } catch (_) { /* ignore */ }
+    try { activeBgmSound.destroy(); } catch (_) { /* ignore */ }
+    activeBgmSound = null;
+    activeBgmKey = null;
+  }
+
+  // Create new track and play
+  if (game.cache.audio.exists(track)) {
+    const snd = game.sound.add(track, { loop: true, volume: 1 });
+    snd.play();
+    activeBgmSound = snd;
+    activeBgmKey = track;
+  } else {
+    console.warn(`BGM track not in cache: ${track}`);
+  }
+}
+
+function playBgmWhenReady(track: BgmKey) {
+  const soundManager = game.sound as unknown as { context?: AudioContext };
+  const ctx = soundManager.context;
+  const isLocked = ctx && ctx.state !== 'running';
+
+  if (game.cache.audio.exists(track)) {
+    if (isLocked) {
+      pendingBgmKey = track;
+      void ctx!.resume().then(() => {
+        audioUnlocked = true;
+        doPlayBgm(track);
+        pendingBgmKey = null;
+      });
+    } else {
+      doPlayBgm(track);
+    }
+  } else {
+    // Assets not loaded yet — wait for ready event
+    pendingBgmKey = track;
+    game.events.once('math-hunter:assets-ready', () => {
+      playBgmWhenReady(track);
+    });
+  }
+}
 
 function applyAudioSettings(settings = audioSettings) {
   audioSettings = settings;
   saveSystem.saveAudioSettings(settings.bgmVolume, settings.sfxVolume);
-  game.sound.volume = settings.bgmVolume / 100;
-}
-
-let activeBgmSound: Phaser.Sound.BaseSound | null = null;
-let activeBgmKey: string | null = null;
-
-function playBgmWhenReady(track: BgmKey) {
-  requestedBgm = track;
-
-  const play = () => {
-    if (requestedBgm !== track || !game.cache.audio.exists(track)) return;
-
-    const startTrack = () => {
-      if (requestedBgm !== track) return;
-      
-      if (activeBgmKey === track && activeBgmSound && activeBgmSound.isPlaying) {
-        return; // Already playing the requested track
-      }
-
-      // Stop and destroy the previous track if any
-      if (activeBgmSound) {
-        activeBgmSound.stop();
-        activeBgmSound.destroy();
-        activeBgmSound = null;
-      }
-
-      // Stop any other lingering BGM tracks just in case
-      for (const otherTrack of BGM_KEYS) {
-        game.sound.stopByKey(otherTrack);
-      }
-
-      // Create and play the new track
-      activeBgmSound = game.sound.add(track, { loop: true, volume: 1 });
-      activeBgmSound.play();
-      activeBgmKey = track;
-    };
-
-    const soundManager = game.sound as unknown as { context?: AudioContext };
-    const audioContext = soundManager.context;
-
-    if (audioContext && audioContext.state !== 'running') {
-      const resumeAudio = () => {
-        if (audioContext.state !== 'running') {
-          void audioContext.resume().then(() => {
-            if (requestedBgm === track) startTrack();
-          });
-        }
-        document.removeEventListener('click', resumeAudio);
-        document.removeEventListener('touchstart', resumeAudio);
-      };
-      document.addEventListener('click', resumeAudio);
-      document.addEventListener('touchstart', resumeAudio);
-
-      void audioContext.resume()
-        .then(startTrack)
-        .catch(() => game.sound.once('unlocked', startTrack));
-    } else {
-      startTrack();
-    }
-  };
-
-  if (game.cache.audio.exists(track)) play();
-  else game.events.once('math-hunter:assets-ready', play);
+  // Apply volume to the active sound directly, not game.sound.volume (which can silence everything)
+  if (activeBgmSound && 'setVolume' in activeBgmSound) {
+    (activeBgmSound as Phaser.Sound.WebAudioSound).setVolume(settings.bgmVolume / 100);
+  }
 }
 
 // ===========================
@@ -176,8 +194,6 @@ function startStage1() {
     stage1.restartStage();
   }
 
-  // Play BGM if not playing
-  applyAudioSettings();
   playBgmWhenReady('The_Sun_Over_Numeria');
   saveSystem.saveProgress(1);
   activeStage = 1;
@@ -199,7 +215,6 @@ function startStage2() {
   if (stage2 && !game.scene.isActive('Stage2Scene')) game.scene.start('Stage2Scene', { grade: currentGrade });
   else if (stage2) stage2.restartStage();
 
-  applyAudioSettings();
   playBgmWhenReady('map2sound');
   saveSystem.saveProgress(2);
   activeStage = 2;
@@ -221,7 +236,6 @@ function startStage3() {
   if (stage3 && !game.scene.isActive('Stage3Scene')) game.scene.start('Stage3Scene', { grade: currentGrade });
   else if (stage3) stage3.restartStage();
 
-  applyAudioSettings();
   playBgmWhenReady('map3sound');
   saveSystem.saveProgress(3);
   activeStage = 3;
@@ -273,7 +287,7 @@ EventBus.on(EVENTS.RETURN_MAIN_MENU, () => {
 });
 
 // Boot
+saveSystem.saveProgress(1); // Reset progress on every fresh load
 showMainMenu();
-applyAudioSettings();
 
 console.log('MATH HUNTER initialized', game);
