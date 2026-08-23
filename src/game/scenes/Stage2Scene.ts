@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { preloadMaxSpritesheets, registerMaxAnimations } from '../entities/registerMaxAnimations';
 import {
   STAGE2_ENCOUNTERS,
+  STAGE2_BOSS_ARENA,
   STAGE2_FRAGMENT_PEDESTAL,
   STAGE2_PLAYER_START,
   STAGE2_ROUTE,
@@ -536,7 +537,12 @@ export default class Stage2Scene extends Phaser.Scene {
 
     graphics.fillStyle(0x00ff00, 0.22);
     graphics.fillCircle(STAGE2_SHRINE.nx * this.mapW, STAGE2_SHRINE.ny * this.mapH, STAGE2_SHRINE.radius);
-    graphics.fillCircle(0.825 * this.mapW, 0.63 * this.mapH, this.mapH * 0.115);
+    graphics.fillEllipse(
+      STAGE2_BOSS_ARENA.nx * this.mapW,
+      STAGE2_BOSS_ARENA.ny * this.mapH,
+      STAGE2_BOSS_ARENA.radiusX * 2,
+      STAGE2_BOSS_ARENA.radiusY * 2,
+    );
 
     if (this.currentMonsterIndex < STAGE2_ENCOUNTERS.length) {
       const target = STAGE2_ENCOUNTERS[this.currentMonsterIndex];

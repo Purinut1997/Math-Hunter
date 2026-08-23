@@ -4,6 +4,12 @@ export const STAGE2_PLAYER_START = { nx: 0.105, ny: 0.155 };
 export const STAGE2_SHRINE = { nx: 0.435, ny: 0.465, radius: 70 };
 export const STAGE2_FRAGMENT_PEDESTAL = { nx: 0.855, ny: 0.825 };
 export const STAGE2_EXIT_PORTAL = { nx: 0.94, ny: 0.84, radius: 65 };
+export const STAGE2_BOSS_ARENA = {
+  nx: 0.825,
+  ny: 0.635,
+  radiusX: 225,
+  radiusY: 135,
+};
 
 export const STAGE2_ENCOUNTERS: EncounterConfig[] = [
   { id: 'E01', arenaId: 'STAGE2_ARENA_01', monsterId: 'thief_rat', maxHp: 1, difficulty: 'easy', nx: 0.285, ny: 0.16, scale: 0.15 },
@@ -70,7 +76,9 @@ export function isStage2Walkable(nx: number, ny: number) {
     (ny - encounter.ny) * STAGE2_MAP_HEIGHT,
   ) <= ENCOUNTER_WALKABLE_RADIUS);
   if (insideEncounterArena) return true;
-  if (Math.hypot(nx - 0.825, ny - 0.63) <= 0.115) return true;
+  const bossArenaX = (nx - STAGE2_BOSS_ARENA.nx) * STAGE2_MAP_WIDTH / STAGE2_BOSS_ARENA.radiusX;
+  const bossArenaY = (ny - STAGE2_BOSS_ARENA.ny) * STAGE2_MAP_HEIGHT / STAGE2_BOSS_ARENA.radiusY;
+  if ((bossArenaX * bossArenaX) + (bossArenaY * bossArenaY) <= 1) return true;
   if (Math.hypot(nx - STAGE2_SHRINE.nx, ny - STAGE2_SHRINE.ny) <= 0.075) return true;
   for (let index = 0; index < STAGE2_ROUTE.length - 1; index += 1) {
     if (distanceToSegment(nx, ny, STAGE2_ROUTE[index], STAGE2_ROUTE[index + 1]) <= 0.055) return true;
