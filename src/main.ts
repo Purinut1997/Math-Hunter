@@ -9,6 +9,7 @@ import { CombatUI } from './game/ui/CombatUI';
 import { DeveloperCredit } from './game/ui/DeveloperCredit';
 import { DialogueUI } from './game/ui/DialogueUI';
 import { StageClearUI } from './game/ui/StageClearUI';
+import { EndCreditsUI } from './game/ui/EndCreditsUI';
 import { EventBus, EVENTS } from './game/EventBus';
 
 // Initialize Phaser Game
@@ -22,6 +23,7 @@ const uiLayer = document.getElementById('ui-layer');
 let combatUI: CombatUI;
 let dialogueUI: DialogueUI;
 let stageClearUI: StageClearUI;
+let endCreditsUI: EndCreditsUI;
 
 if (uiLayer) {
   combatUI = new CombatUI();
@@ -34,6 +36,9 @@ if (uiLayer) {
   
   stageClearUI = new StageClearUI();
   stageClearUI.mount();
+
+  endCreditsUI = new EndCreditsUI();
+  endCreditsUI.mount();
 }
 
 // UI Scenes
@@ -76,6 +81,7 @@ function showMainMenu() {
     (stage) => startStage(stage),
     audioSettings,
     applyAudioSettings,
+    saveSystem.loadProgress(),
   );
 }
 
@@ -93,7 +99,8 @@ function showGradeSelection() {
 }
 
 function startStage(stage: number) {
-  if (stage === 2) startStage2();
+  if (stage === 3) startStage3();
+  else if (stage === 2) startStage2();
   else startStage1();
 }
 
@@ -144,6 +151,28 @@ function startStage2() {
   console.log(`Stage 2 started | Grade: ป.${currentGrade}`);
 }
 
+function startStage3() {
+  gradeSelection.unmount();
+  mainMenu.unmount();
+  combatUI.mount();
+  dialogueUI.mount();
+  stageClearUI.mount();
+  endCreditsUI.mount();
+
+  if (game.scene.isActive('Stage1Scene')) game.scene.stop('Stage1Scene');
+  if (game.scene.isActive('Stage2Scene')) game.scene.stop('Stage2Scene');
+
+  const stage3 = game.scene.getScene('Stage3Scene') as import('./game/scenes/Stage3Scene').default;
+  if (stage3 && !game.scene.isActive('Stage3Scene')) game.scene.start('Stage3Scene', { grade: currentGrade });
+  else if (stage3) stage3.restartStage();
+
+  applyAudioSettings();
+  playBgmWhenReady();
+  saveSystem.saveProgress(3);
+  activeStage = 3;
+  console.log(`Stage 3 started | Grade: ป.${currentGrade}`);
+}
+
 type StageClearAction = 'next' | 'select';
 type StageClearNavigation = { action: StageClearAction; stage: number };
 
@@ -158,16 +187,34 @@ EventBus.on(EVENTS.STAGE_CLEARED, (navigation: StageClearNavigation | StageClear
     startStage2();
     return;
   }
+  if (action === 'next' && clearedStage === 2) {
+    startStage3();
+    return;
+  }
 
   if (game.scene.isActive('Stage1Scene')) game.scene.stop('Stage1Scene');
   if (game.scene.isActive('Stage2Scene')) game.scene.stop('Stage2Scene');
+  if (game.scene.isActive('Stage3Scene')) game.scene.stop('Stage3Scene');
   activeStage = 0;
   showMainMenu();
 });
 
 EventBus.on(EVENTS.SHOW_STAGE_CLEAR, (data?: { stage?: number }) => {
-  if ((data?.stage ?? activeStage) === 1) saveSystem.saveProgress(2);
-  else saveSystem.saveProgress(2);
+  const clearedStage = data?.stage ?? activeStage;
+  saveSystem.saveProgress(Math.min(3, clearedStage + 1));
+});
+
+EventBus.on(EVENTS.RETURN_MAIN_MENU, () => {
+  if (game.scene.isActive('Stage1Scene')) game.scene.stop('Stage1Scene');
+  if (game.scene.isActive('Stage2Scene')) game.scene.stop('Stage2Scene');
+  if (game.scene.isActive('Stage3Scene')) game.scene.stop('Stage3Scene');
+  combatUI.unmount();
+  dialogueUI.unmount();
+  stageClearUI.unmount();
+  endCreditsUI.unmount();
+  activeStage = 0;
+  showMainMenu();
+  endCreditsUI.mount();
 });
 
 // Boot

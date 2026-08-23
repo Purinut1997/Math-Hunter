@@ -7,6 +7,7 @@ export class MainMenuScene {
     onSelectStage: (stage: number) => void,
     audioSettings: { bgmVolume: number; sfxVolume: number },
     onAudioSettingsChange: (settings: { bgmVolume: number; sfxVolume: number }) => void,
+    unlockedStage = 1,
   ) {
     // Remove any existing menu
     this.unmount();
@@ -117,8 +118,8 @@ export class MainMenuScene {
             <h2 class="game-modal__title">🗺️ เลือกด่าน</h2>
             <div class="game-modal__content stage-select-list">
               <button id="btn-stage-1" class="game-btn game-btn--primary">ด่าน 1 · หมู่บ้านบวกไว</button>
-              <button id="btn-stage-2" class="game-btn game-btn--primary">ด่าน 2 · ป่าลบเลือน</button>
-              <button class="game-btn game-btn--secondary" disabled>🔒 ด่าน 3 · ยังไม่เปิดเผย</button>
+              <button id="btn-stage-2" class="game-btn game-btn--primary" ${unlockedStage < 2 ? 'disabled' : ''}>${unlockedStage < 2 ? '🔒 ' : ''}ด่าน 2 · ป่าลบเลือน</button>
+              <button id="btn-stage-3" class="game-btn game-btn--primary" ${unlockedStage < 3 ? 'disabled' : ''}>${unlockedStage < 3 ? '🔒 ' : ''}ด่าน 3 · ปราสาทแห่งศูนย์</button>
             </div>
             <button id="btn-stage-select-close" class="game-btn game-btn--secondary">ปิด</button>
           </div>
@@ -137,7 +138,8 @@ export class MainMenuScene {
       if (modal) modal.style.display = 'flex';
     });
     document.getElementById('btn-stage-1')?.addEventListener('click', () => onSelectStage(1));
-    document.getElementById('btn-stage-2')?.addEventListener('click', () => onSelectStage(2));
+    if (unlockedStage >= 2) document.getElementById('btn-stage-2')?.addEventListener('click', () => onSelectStage(2));
+    if (unlockedStage >= 3) document.getElementById('btn-stage-3')?.addEventListener('click', () => onSelectStage(3));
     document.getElementById('btn-stage-select-close')?.addEventListener('click', () => {
       const modal = document.getElementById('stage-select-modal');
       if (modal) modal.style.display = 'none';

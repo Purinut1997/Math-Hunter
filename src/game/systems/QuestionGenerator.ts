@@ -398,6 +398,10 @@ export class QuestionGenerator {
     this.recentQuestions = new Set<string>();
   }
 
+  public static getUsedQuestionCount() {
+    return this.recentQuestions.size;
+  }
+
   private static gcd(a: number, b: number): number {
     let x = Math.abs(a);
     let y = Math.abs(b);

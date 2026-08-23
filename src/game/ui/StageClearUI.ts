@@ -74,8 +74,12 @@ export class StageClearUI {
       if (fragment) fragment.textContent = data?.fragmentText ?? '◆ 1 / 3';
       if (message) message.textContent = data?.message ?? 'หมู่บ้านปลอดภัยแล้ว!';
       if (next) {
-        next.disabled = stage >= 2;
-        next.textContent = stage >= 2 ? '🔒 ด่านสุดท้าย · เร็ว ๆ นี้' : 'ไปด่าน 2 · ป่าลบเลือน';
+        next.disabled = stage >= 3;
+        next.textContent = stage === 1
+          ? 'ไปด่าน 2 · ป่าลบเลือน'
+          : stage === 2
+            ? 'ไปด่าน 3 · ปราสาทแห่งศูนย์'
+            : 'จบการผจญภัยแล้ว';
       }
     }
   }

@@ -15,10 +15,12 @@ export const EVENTS = {
   DIALOGUE_CLOSED: 'dialogue_closed',
   SHOW_STAGE_CLEAR: 'show_stage_clear',
   SHOW_GAME_OVER: 'show_game_over',
+  SHOW_GAME_CLEAR: 'show_game_clear',
   
   // From React -> Phaser
   ANSWER_SELECTED: 'answer_selected',
   RESTART_STAGE: 'restart_stage',
   COMBAT_TIMEOUT: 'combat_timeout',
   STAGE_CLEARED: 'stage_cleared',
+  RETURN_MAIN_MENU: 'return_main_menu',
 };

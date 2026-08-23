@@ -27,6 +27,9 @@ export class CombatManager {
   private timerInterval: ReturnType<typeof setInterval> | null = null;
   private timerStartDelay: ReturnType<typeof setTimeout> | null = null;
   private bossQuestionCount: number = 0;
+  private correctAnswers = 0;
+  private wrongAnswers = 0;
+  private bestStreak = 0;
 
   constructor(grade: number, topic: 'mixed' | 'subtraction' = 'mixed') {
     this.grade = grade;
@@ -58,7 +61,7 @@ export class CombatManager {
     this.state.monsterMaxHp = encounter.maxHp;
     this.state.isInputDisabled = false;
     this.state.correctAnswerWas = null;
-    this.state.isBoss = encounter.monsterId === 'king_slime' || encounter.monsterId === 'void_stag';
+    this.state.isBoss = encounter.monsterId === 'king_slime' || encounter.monsterId === 'void_stag' || encounter.monsterId === 'lord_zero';
     this.state.isTimeUp = false;
     this.state.timeRemaining = null;
     this.state.maxTime = null;
@@ -75,8 +78,10 @@ export class CombatManager {
     const isCorrect = selectedAnswer === this.state.currentQuestion.correctAnswer;
 
     if (isCorrect) {
+      this.correctAnswers += 1;
       this.state.monsterHp -= 1;
       this.state.correctStreak += 1;
+      this.bestStreak = Math.max(this.bestStreak, this.state.correctStreak);
       
       if (this.state.correctStreak >= 3) {
         if (this.state.playerHp < this.state.playerMaxHp) {
@@ -99,6 +104,7 @@ export class CombatManager {
       this.broadcastState();
       return 'correct';
     } else {
+      this.wrongAnswers += 1;
       this.state.playerHp -= 1;
       this.state.correctStreak = 0;
       this.state.correctAnswerWas = this.state.currentQuestion.correctAnswer;
@@ -113,6 +119,7 @@ export class CombatManager {
 
     this.stopTimer();
     this.state.isInputDisabled = true;
+    this.wrongAnswers += 1;
     this.state.isTimeUp = true;
     this.state.playerHp -= 1;
     this.state.correctStreak = 0;
@@ -232,5 +239,21 @@ export class CombatManager {
   public resetPlayer() {
     this.state.playerHp = this.state.playerMaxHp;
     this.state.correctStreak = 0;
+  }
+
+  public resetRunStats() {
+    this.resetPlayer();
+    this.correctAnswers = 0;
+    this.wrongAnswers = 0;
+    this.bestStreak = 0;
+  }
+
+  public getRunStats() {
+    return {
+      correctAnswers: this.correctAnswers,
+      wrongAnswers: this.wrongAnswers,
+      bestStreak: this.bestStreak,
+      playerHp: this.state.playerHp,
+    };
   }
 }
