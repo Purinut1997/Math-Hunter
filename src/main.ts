@@ -48,6 +48,8 @@ const gradeSelection = new GradeSelectionScene();
 let currentGrade: GradeLevel = saveSystem.loadGrade();
 let audioSettings = saveSystem.loadAudioSettings();
 let activeStage = 0;
+const BGM_KEYS = ['bgm', 'map2sound', 'map3sound'] as const;
+type BgmKey = typeof BGM_KEYS[number];
 
 function applyAudioSettings(settings = audioSettings) {
   audioSettings = settings;
@@ -55,14 +57,23 @@ function applyAudioSettings(settings = audioSettings) {
   game.sound.volume = settings.bgmVolume / 100;
 }
 
-function playBgmWhenReady() {
+function playBgmWhenReady(track: BgmKey) {
   const play = () => {
-    if (game.cache.audio.exists('bgm') && !game.sound.get('bgm')) {
-      game.sound.play('bgm', { loop: true, volume: 1 });
+    if (!game.cache.audio.exists(track)) return;
+
+    for (const otherTrack of BGM_KEYS) {
+      if (otherTrack !== track) game.sound.stopByKey(otherTrack);
+    }
+
+    const currentTrack = game.sound.get(track);
+    if (!currentTrack) {
+      game.sound.play(track, { loop: true, volume: 1 });
+    } else if (!currentTrack.isPlaying) {
+      currentTrack.play({ loop: true, volume: 1 });
     }
   };
 
-  if (game.cache.audio.exists('bgm')) play();
+  if (game.cache.audio.exists(track)) play();
   else game.events.once('math-hunter:assets-ready', play);
 }
 
@@ -123,7 +134,7 @@ function startStage1() {
 
   // Play BGM if not playing
   applyAudioSettings();
-  playBgmWhenReady();
+  playBgmWhenReady('bgm');
   saveSystem.saveProgress(1);
   activeStage = 1;
 
@@ -145,7 +156,7 @@ function startStage2() {
   else if (stage2) stage2.restartStage();
 
   applyAudioSettings();
-  playBgmWhenReady();
+  playBgmWhenReady('map2sound');
   saveSystem.saveProgress(2);
   activeStage = 2;
   console.log(`Stage 2 started | Grade: ป.${currentGrade}`);
@@ -167,7 +178,7 @@ function startStage3() {
   else if (stage3) stage3.restartStage();
 
   applyAudioSettings();
-  playBgmWhenReady();
+  playBgmWhenReady('map3sound');
   saveSystem.saveProgress(3);
   activeStage = 3;
   console.log(`Stage 3 started | Grade: ป.${currentGrade}`);

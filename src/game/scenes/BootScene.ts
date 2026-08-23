@@ -9,6 +9,8 @@ export default class BootScene extends Phaser.Scene {
     // Load branding or minimal assets here
     this.load.image('developer-credit', 'assets/branding/developed-by-purinut.png');
     this.load.audio('bgm', 'assets/audio/bgm.m4a');
+    this.load.audio('map2sound', 'assets/audio/map2sound.ogg');
+    this.load.audio('map3sound', 'assets/audio/map3sound.ogg');
   }
 
   create() {
