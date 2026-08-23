@@ -8,6 +8,9 @@ export default class BootScene extends Phaser.Scene {
   preload() {
     // Load branding or minimal assets here
     this.load.image('developer-credit', 'assets/branding/developed-by-purinut.png');
+    this.load.audio('BG', 'assets/audio/BG.mp3');
+    this.load.audio('The_Sun_Over_Numeria', 'assets/audio/The_Sun_Over_Numeria.mp3');
+    // keep the old bgm just in case it's referenced elsewhere, or we can just replace it
     this.load.audio('bgm', 'assets/audio/bgm.m4a');
     this.load.audio('map2sound', [
       'assets/audio/map2sound.mp3',

@@ -48,7 +48,7 @@ const gradeSelection = new GradeSelectionScene();
 let currentGrade: GradeLevel = saveSystem.loadGrade();
 let audioSettings = saveSystem.loadAudioSettings();
 let activeStage = 0;
-const BGM_KEYS = ['bgm', 'map2sound', 'map3sound'] as const;
+const BGM_KEYS = ['bgm', 'BG', 'The_Sun_Over_Numeria', 'map2sound', 'map3sound'] as const;
 type BgmKey = typeof BGM_KEYS[number];
 let requestedBgm: BgmKey | null = null;
 
@@ -127,7 +127,7 @@ function playBgmWhenReady(track: BgmKey) {
 function showMainMenu() {
   gradeSelection.unmount();
   combatUI.unmount();
-  playBgmWhenReady('bgm');
+  playBgmWhenReady('BG');
   mainMenu.mount(
     () => showGradeSelection(),
     () => {
@@ -178,7 +178,7 @@ function startStage1() {
 
   // Play BGM if not playing
   applyAudioSettings();
-  playBgmWhenReady('bgm');
+  playBgmWhenReady('The_Sun_Over_Numeria');
   saveSystem.saveProgress(1);
   activeStage = 1;
 
