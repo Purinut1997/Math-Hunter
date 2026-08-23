@@ -59,9 +59,14 @@ let activeBgmSound: Phaser.Sound.BaseSound | null = null;
 let activeBgmKey: BgmKey | null = null;
 
 function doPlayBgm(track: BgmKey) {
-  if (activeBgmKey === track && activeBgmSound && activeBgmSound.isPlaying) return;
+  console.log(`[BGM] doPlayBgm called for: ${track}`);
+  if (activeBgmKey === track && activeBgmSound && activeBgmSound.isPlaying) {
+    console.log(`[BGM] Track ${track} is already playing.`);
+    return;
+  }
 
   if (activeBgmSound) {
+    console.log(`[BGM] Stopping previous track: ${activeBgmKey}`);
     activeBgmSound.stop();
     activeBgmSound.destroy();
     activeBgmSound = null;
@@ -70,6 +75,9 @@ function doPlayBgm(track: BgmKey) {
     game.sound.stopByKey(k);
   }
 
+  const sndManager = game.sound as any;
+  console.log(`[BGM] Adding new track: ${track}. AudioContext locked: ${sndManager.locked}, state: ${sndManager.context?.state}`);
+  
   activeBgmSound = game.sound.add(track, { loop: true });
   activeBgmSound.play();
   activeBgmKey = track;
@@ -78,8 +86,6 @@ function doPlayBgm(track: BgmKey) {
 
 function playBgmWhenReady(track: BgmKey) {
   const tryPlay = () => {
-    // Let Phaser handle the AudioContext locking automatically.
-    // Calling play() while locked will queue it to play upon unlock.
     doPlayBgm(track);
   };
 
@@ -94,11 +100,12 @@ function applyAudioSettings(settings = audioSettings) {
   audioSettings = settings;
   saveSystem.saveAudioSettings(settings.bgmVolume, settings.sfxVolume);
   
-  // Set global volume (this will affect both BGM and SFX by default)
   game.sound.volume = settings.bgmVolume / 100;
+  console.log(`[BGM] applyAudioSettings: Global volume set to ${game.sound.volume}`);
   
   if (activeBgmSound && 'setVolume' in activeBgmSound) {
     (activeBgmSound as any).setVolume(settings.bgmVolume / 100);
+    console.log(`[BGM] applyAudioSettings: Active track volume set to ${settings.bgmVolume / 100}`);
   }
 }
 
