@@ -101,6 +101,7 @@ function playBgmWhenReady(track: BgmKey) {
 function showMainMenu() {
   gradeSelection.unmount();
   combatUI.unmount();
+  playBgmWhenReady('bgm');
   mainMenu.mount(
     () => showGradeSelection(),
     () => {

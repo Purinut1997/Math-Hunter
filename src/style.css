@@ -1325,3 +1325,35 @@ body {
   .game-clear-result__quote { margin-top: 8px; font-size: 0.9rem; }
   .end-game-ui__next { bottom: 10px; right: 12px; min-width: 150px; }
 }
+
+/* Stage Clear Responsive Layout for Mobile / Small Height */
+@media (max-height: 650px) and (orientation: landscape), (max-width: 800px) {
+  .stage-clear-title {
+    font-size: clamp(2.5rem, 8vh, 5rem);
+    margin-bottom: 5px;
+  }
+  .stage-clear-subtitle {
+    font-size: clamp(1.2rem, 4vh, 2rem);
+    margin-bottom: 10px;
+  }
+  .stage-clear-stats {
+    padding: 10px 20px;
+    margin-bottom: 15px;
+  }
+  .stage-clear-stat-item {
+    font-size: clamp(1rem, 3vh, 1.5rem);
+  }
+  .stage-clear-message {
+    font-size: clamp(1rem, 3vh, 1.5rem);
+    margin-bottom: 15px;
+  }
+  .stage-clear-buttons {
+    gap: 10px;
+  }
+  .stage-clear-buttons .game-btn {
+    padding: 8px 16px;
+    font-size: clamp(0.9rem, 2.5vh, 1.1rem);
+    min-height: auto;
+  }
+}
+
