@@ -50,6 +50,40 @@ export class MainMenuScene {
                 <span class="game-btn__icon">▶</span>
                 <span>เล่นต่อ</span>
               </button>
+
+    const uiLayer = document.getElementById('ui-layer');
+    if (!uiLayer) return;
+
+    const html = `
+      <div id="main-menu" class="main-menu">
+        <!-- Animated Background -->
+        <div class="main-menu__bg">
+          <img src="assets/backgrounds/opening_cinematic.gif" 
+               alt="Math Hunter Background" class="main-menu__bg-img"/>
+        </div>
+
+        <!-- UI Layer -->
+        <div class="main-menu__ui">
+          <!-- Logo + Buttons panel (left side) -->
+          <div class="main-menu__panel">
+            <div class="main-menu__logo-wrap">
+              <img src="assets/branding/logo.png" alt="Math Hunter" class="main-menu__logo" onerror="this.style.display='none'; document.getElementById('main-menu-title').style.display='block'"/>
+              <div id="main-menu-title" class="main-menu__title-fallback" style="display:none">
+                <h1 class="main-menu__title">MATH HUNTER</h1>
+                <p class="main-menu__subtitle">ศึกพิชิตแก่นพลังตัวเลข</p>
+              </div>
+            </div>
+
+            <!-- Primary Buttons -->
+            <div class="main-menu__buttons">
+              <button id="btn-start" class="game-btn game-btn--primary">
+                <span class="game-btn__icon">⚔️</span>
+                <span>เริ่มผจญภัย</span>
+              </button>
+              <button id="btn-continue" class="game-btn game-btn--secondary">
+                <span class="game-btn__icon">▶</span>
+                <span>เล่นต่อ</span>
+              </button>
               <button id="btn-select-stage" class="game-btn game-btn--secondary">
                 <span class="game-btn__icon">🗺️</span>
                 <span>เลือกด่าน</span>
@@ -58,6 +92,9 @@ export class MainMenuScene {
 
             <!-- Secondary Buttons -->
             <div class="main-menu__buttons-secondary">
+              <button id="btn-story" class="game-btn game-btn--small">
+                <span>✨ เนื้อเรื่อง</span>
+              </button>
               <button id="btn-tutorial" class="game-btn game-btn--small">
                 <span>📖 คู่มือ</span>
               </button>
@@ -114,6 +151,37 @@ export class MainMenuScene {
               <p style="margin-top: 10px; font-size: 0.9em;">ช่องทางติดต่อ<br/><a href="https://mediaplatform.pages.dev/" target="_blank" rel="noopener noreferrer" style="color: #60a5fa; text-decoration: underline;">https://mediaplatform.pages.dev/</a></p>
             </div>
             <button id="btn-credits-close" class="game-btn game-btn--primary">ปิด</button>
+          </div>
+        </div>
+
+        <!-- Story Modal -->
+        <div id="story-modal" class="game-modal" style="display:none">
+          <div class="game-modal__box" style="max-width: 700px; max-height: 85vh; display: flex; flex-direction: column;">
+            <h2 class="game-modal__title">✨ ปฐมบทแห่งอาร์คาเดีย</h2>
+            <div class="game-modal__content" style="text-align: left; padding: 20px; font-size: 1.05rem; line-height: 1.7; overflow-y: auto;">
+              <p>นานมาแล้ว ดินแดน <strong>อาร์คาเดีย</strong> เคยเป็นสถานที่ที่สงบสุข พลังแห่งความรู้ถูกเก็บรักษาไว้ใน <strong style="color: #60a5fa;">ศิลาศักดิ์สิทธิ์ทั้งหก</strong> ซึ่งช่วยปกป้องผู้คนจากความมืด</p>
+              <br/>
+              <p>แต่วันหนึ่ง พลังลึกลับจากหุบเขาต้องห้ามได้ตื่นขึ้น... เหล่ามอนสเตอร์บุกยึดเส้นทางสู่ศิลาศักดิ์สิทธิ์ทีละแห่ง และที่ปลายทางของดินแดน มีสิ่งมีชีวิตทรงพลังที่เรียกว่า <strong style="color: #fbbf24;">ราชันแห่งความมืด</strong> กำลังรวบรวมพลังเพื่อทำลายศิลาชิ้นสุดท้าย</p>
+              <br/>
+              <p>หากมันทำสำเร็จ ความมืดจะปกคลุมอาร์คาเดียตลอดไป...</p>
+              <br/>
+              <p>เหล่านักรบมากมายพยายามเดินทางเข้าไปหยุดยั้งมัน แต่ไม่มีใครสามารถผ่านบททดสอบทั้งห้าได้ จนกระทั่งวันนี้...</p>
+              <br/>
+              <p>นักเรียนผู้กล้าคนหนึ่งได้รับเลือกให้เป็นผู้พิทักษ์คนต่อไป และนักเรียนคนนั้นก็คือ... <strong>คุณ</strong></p>
+              <hr style="border: 0; border-top: 1px solid #334155; margin: 20px 0;"/>
+              <p>ในเกมนี้ ผู้เล่นจะรับบทเป็น <strong>นักเรียนผู้พิทักษ์แห่งความรู้</strong> ผู้ต้องใช้ทั้งความคิด ความรวดเร็ว และทักษะทางคณิตศาสตร์ เพื่อฝ่าด่านและเอาชนะศัตรู</p>
+              <br/>
+              <p>เส้นทางเบื้องหน้ามีเพียงทางเดียว: มอนสเตอร์ตัวที่ 1 → 2 → 3 → 4 → 5 → <strong style="color: #ef4444;">BOSS</strong></p>
+              <br/>
+              <p>ในการเอาชนะศัตรูแต่ละตัว พลังเพียงอย่างเดียวไม่เพียงพอ นักเรียนจะต้อง <strong style="color: #4ade80;">ตอบคำถามและแก้โจทย์ให้ถูกต้อง</strong> เพื่อโจมตีศัตรูและเปิดเส้นทางต่อไป หากตอบผิด ศัตรูจะได้เปรียบ หากตอบถูก นักเรียนจะสามารถโจมตีและเดินหน้าต่อได้</p>
+              <br/>
+              <p>และเมื่อผ่านผู้พิทักษ์ทั้งห้า... การต่อสู้ครั้งสุดท้ายกับ BOSS จะเริ่มต้นขึ้น</p>
+              <br/>
+              <p style="text-align: center; font-size: 1.15rem; color: #fbbf24; margin-top: 15px;">ภารกิจของคุณคือ เอาชนะมอนสเตอร์ ฝ่าบททดสอบคณิตศาสตร์<br/>ไปให้ถึงปราสาทแห่งความมืด และโค่น BOSS เพื่อกอบกู้พลังแห่งความรู้กลับคืนมา</p>
+            </div>
+            <div style="padding: 15px;">
+              <button id="btn-story-close" class="game-btn game-btn--primary">เริ่มการผจญภัย!</button>
+            </div>
           </div>
         </div>
 
@@ -219,6 +287,15 @@ export class MainMenuScene {
       if (modal) modal.style.display = 'none';
     });
 
+    document.getElementById('btn-story')?.addEventListener('click', () => {
+      const modal = document.getElementById('story-modal');
+      if (modal) modal.style.display = 'flex';
+    });
+    document.getElementById('btn-story-close')?.addEventListener('click', () => {
+      const modal = document.getElementById('story-modal');
+      if (modal) modal.style.display = 'none';
+    });
+
     document.getElementById('btn-settings')?.addEventListener('click', () => {
       const modal = document.getElementById('settings-modal');
       if (modal) modal.style.display = 'flex';
@@ -255,11 +332,12 @@ export class MainMenuScene {
     document.getElementById('credits-modal')?.addEventListener('click', (e) => {
       if (e.target === e.currentTarget) (e.currentTarget as HTMLElement).style.display = 'none';
     });
+    document.getElementById('story-modal')?.addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) (e.currentTarget as HTMLElement).style.display = 'none';
+    });
     document.getElementById('stage-select-modal')?.addEventListener('click', (e) => {
       if (e.target === e.currentTarget) (e.currentTarget as HTMLElement).style.display = 'none';
     });
-  }
-
   unmount() {
     if (this.element) {
       this.element.remove();
