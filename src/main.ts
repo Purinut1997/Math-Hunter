@@ -56,7 +56,6 @@ type BgmKey = 'BG' | 'The_Sun_Over_Numeria' | 'map2sound' | 'map3sound';
 let activeBgmSound: Phaser.Sound.BaseSound | null = null;
 let activeBgmKey: BgmKey | null = null;
 let pendingBgmKey: BgmKey | null = null;
-let audioUnlocked = false;
 
 // Listen for any user gesture to unlock AudioContext (required on mobile)
 const tryUnlockAudio = () => {
@@ -64,14 +63,12 @@ const tryUnlockAudio = () => {
   const ctx = soundManager.context;
   if (ctx && ctx.state !== 'running') {
     void ctx.resume().then(() => {
-      audioUnlocked = true;
       if (pendingBgmKey) {
         doPlayBgm(pendingBgmKey);
         pendingBgmKey = null;
       }
     });
   } else {
-    audioUnlocked = true;
     if (pendingBgmKey) {
       doPlayBgm(pendingBgmKey);
       pendingBgmKey = null;
@@ -113,7 +110,6 @@ function playBgmWhenReady(track: BgmKey) {
     if (isLocked) {
       pendingBgmKey = track;
       void ctx!.resume().then(() => {
-        audioUnlocked = true;
         doPlayBgm(track);
         pendingBgmKey = null;
       });
