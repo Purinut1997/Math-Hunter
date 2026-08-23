@@ -81,7 +81,20 @@ function playBgmWhenReady(track: BgmKey) {
 
     const soundManager = game.sound as unknown as { context?: AudioContext };
     const audioContext = soundManager.context;
+
     if (audioContext && audioContext.state !== 'running') {
+      const resumeAudio = () => {
+        if (audioContext.state !== 'running') {
+          void audioContext.resume().then(() => {
+            if (requestedBgm === track) startTrack();
+          });
+        }
+        document.removeEventListener('click', resumeAudio);
+        document.removeEventListener('touchstart', resumeAudio);
+      };
+      document.addEventListener('click', resumeAudio);
+      document.addEventListener('touchstart', resumeAudio);
+
       void audioContext.resume()
         .then(startTrack)
         .catch(() => game.sound.once('unlocked', startTrack));
