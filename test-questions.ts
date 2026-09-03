@@ -1,95 +1,134 @@
 import { QuestionGenerator } from './src/game/systems/QuestionGenerator.ts';
-import { Stage2QuestionBank } from './src/game/data/Stage2QuestionBank.ts';
-import { Stage3QuestionBank } from './src/game/data/Stage3QuestionBank.ts';
-import { readFileSync } from 'node:fs';
+import { MasterQuestionBank } from './src/game/data/MasterQuestionBank.ts';
+import { CombatManager } from './src/game/systems/CombatManager.ts';
 
 function runTests() {
-  console.log('Running 1000 Question Generations Across All Grades...');
-  
-  let passed = 0;
-  let failed = 0;
+  console.log('=== 1. Checking MasterQuestionBank Pools and Choice Validation ===');
   const grades = [3, 4, 5, 6];
   const difficulties = ['easy', 'normal', 'hard'] as const;
-  
+
+  let totalQuestionsChecked = 0;
+
+  for (const grade of grades) {
+    for (const difficulty of difficulties) {
+      const poolSize = MasterQuestionBank.getPoolSize(grade, difficulty);
+      if (poolSize !== 30) {
+        throw new Error(`Expected 30 questions for Grade ${grade} (${difficulty}), found ${poolSize}`);
+      }
+
+      MasterQuestionBank.resetSession();
+      const seenIds = new Set<string>();
+
+      for (let i = 0; i < poolSize; i++) {
+        const q = QuestionGenerator.generate({ grade, difficulty });
+        totalQuestionsChecked++;
+
+        if (seenIds.has(q.id)) {
+          throw new Error(`Duplicate question ID generated within session: ${q.id}`);
+        }
+        seenIds.add(q.id);
+
+        const uniqueChoices = new Set(q.choices);
+        if (uniqueChoices.size !== 4) {
+          throw new Error(`Choices are not 4 unique items for ${q.id}: ${JSON.stringify(q.choices)}`);
+        }
+
+        const matchCount = q.choices.filter(c => String(c) === String(q.correctAnswer)).length;
+        if (matchCount !== 1) {
+          throw new Error(`Correct answer "${q.correctAnswer}" not found exactly once in choices: ${JSON.stringify(q.choices)}`);
+        }
+      }
+
+      console.log(`Grade ${grade} [${difficulty}]: Verified ${poolSize} unique questions with 4 choices.`);
+    }
+  }
+
+  console.log(`\nTotal verified question bank items: ${totalQuestionsChecked}/360`);
+
+  console.log('\n=== 2. Random Sampling Stress Test (1000 generations) ===');
+  let passed = 0;
   for (let i = 0; i < 1000; i++) {
     const grade = grades[Math.floor(Math.random() * grades.length)];
     const diff = difficulties[Math.floor(Math.random() * difficulties.length)];
-    
-    try {
-      const q = QuestionGenerator.generate({ grade, difficulty: diff });
-      
-      const uniqueChoices = new Set(q.choices);
-      const isUnique = uniqueChoices.size === 4;
-      
-      const correctCount = q.choices.filter(c => c === q.correctAnswer).length;
-      
-      if (!isUnique || correctCount !== 1) {
-        console.error(`Validation failed for:`, q);
-        failed++;
-      } else {
-        passed++;
-      }
-    } catch (e) {
-      console.error(`Error generating question:`, e);
-      failed++;
+    const q = QuestionGenerator.generate({ grade, difficulty: diff });
+    const uniqueChoices = new Set(q.choices);
+    if (uniqueChoices.size === 4 && q.choices.includes(q.correctAnswer)) {
+      passed++;
     }
   }
+  console.log(`Stress test passed: ${passed}/1000`);
+  if (passed !== 1000) process.exit(1);
 
-  console.log(`\nTest Complete:`);
-  console.log(`Passed: ${passed}`);
-  console.log(`Failed: ${failed}`);
+  console.log('\n=== 3. CombatManager Difficulty Distribution Tests ===');
 
-  if (failed > 0) {
-    process.exit(1);
-  }
-
-  console.log('\nChecking Stage 2 document bank, grade routing, and no-repeat sessions...');
-  Stage2QuestionBank.loadMarkdown(readFileSync('./public/assets/data/stage2_questions.md', 'utf8'));
-  for (const grade of grades) {
-    for (const difficulty of ['easy', 'normal'] as const) {
-      Stage2QuestionBank.resetSession();
-      const questionIds = new Set<string>();
-      const questionTexts = new Set<string>();
-      for (let index = 0; index < 14; index++) {
-        const question = QuestionGenerator.generate({ grade, difficulty, topic: 'stage2' });
-        if (questionIds.has(question.id) || questionTexts.has(question.question)) {
-          throw new Error(`Duplicate Stage 2 question for grade ${grade} ${difficulty}: ${question.id}`);
-        }
-        if (!question.choices.includes(question.correctAnswer)) {
-          throw new Error(`Missing correct choice for grade ${grade} ${difficulty}: ${question.id}`);
-        }
-        if (new Set(question.choices).size !== 4 || question.choices.filter(choice => choice === question.correctAnswer).length !== 1) {
-          throw new Error(`Invalid Stage 2 choices for grade ${grade} ${difficulty}: ${question.id}`);
-        }
-        questionIds.add(question.id);
-        questionTexts.add(question.question);
-      }
-      console.log(`Grade ${grade} ${difficulty}: pool ${Stage2QuestionBank.getPoolSize(grade, difficulty)}, sampled ${questionIds.size} unique`);
+  function sampleDifficulties(cm: CombatManager, isBoss: boolean, samples = 10000): Record<string, number> {
+    const counts: Record<string, number> = { easy: 0, normal: 0, hard: 0 };
+    for (let i = 0; i < samples; i++) {
+      cm.startEncounter({
+        monsterId: isBoss ? 'king_slime' : 'slime_1',
+        maxHp: 3,
+        difficulty: 'easy'
+      });
+      const q = (cm as any).state.currentQuestion;
+      const idParts = q.id.split(':');
+      const diff = idParts[1];
+      counts[diff] = (counts[diff] || 0) + 1;
+      cm.endEncounter();
     }
+    return counts;
   }
 
-  console.log('\nChecking Stage 3 document bank, grade routing, and no-repeat sessions...');
-  Stage3QuestionBank.loadMarkdown(readFileSync('./public/assets/data/stage3_questions.md', 'utf8'));
-  for (const grade of grades) {
-    for (const difficulty of ['normal', 'hard'] as const) {
-      Stage3QuestionBank.resetSession();
-      const sampleSize = difficulty === 'hard' ? 12 : 20;
-      const questionIds = new Set<string>();
-      const questionTexts = new Set<string>();
-      for (let index = 0; index < sampleSize; index++) {
-        const question = QuestionGenerator.generate({ grade, difficulty, topic: 'stage3' });
-        if (questionIds.has(question.id) || questionTexts.has(question.question)) {
-          throw new Error(`Duplicate Stage 3 question for grade ${grade} ${difficulty}: ${question.id}`);
-        }
-        if (new Set(question.choices).size !== 4 || question.choices.filter(choice => choice === question.correctAnswer).length !== 1) {
-          throw new Error(`Invalid Stage 3 choices for grade ${grade} ${difficulty}: ${question.id}`);
-        }
-        questionIds.add(question.id);
-        questionTexts.add(question.question);
-      }
-      console.log(`Grade ${grade} ${difficulty}: pool ${Stage3QuestionBank.getPoolSize(grade, difficulty)}, sampled ${questionIds.size} unique`);
-    }
+  // Stage 1 Normal: 100% easy
+  const s1Normal = sampleDifficulties(new CombatManager(3, 'mixed'), false, 2000);
+  console.log('Stage 1 Normal:', s1Normal);
+  if (s1Normal.easy !== 2000) throw new Error('Stage 1 normal must be 100% easy');
+
+  // Stage 1 Boss: 50% easy, 50% normal
+  const s1Boss = sampleDifficulties(new CombatManager(3, 'mixed'), true, 5000);
+  console.log('Stage 1 Boss (target: ~50% easy, ~50% normal):', {
+    easyPct: (s1Boss.easy / 5000 * 100).toFixed(1) + '%',
+    normalPct: (s1Boss.normal / 5000 * 100).toFixed(1) + '%'
+  });
+  if (s1Boss.hard > 0 || Math.abs(s1Boss.easy - 2500) > 250) throw new Error('Stage 1 boss distribution out of range');
+
+  // Stage 2 Normal: 70% easy, 30% normal
+  const s2Normal = sampleDifficulties(new CombatManager(4, 'stage2'), false, 5000);
+  console.log('Stage 2 Normal (target: 70% easy, 30% normal):', {
+    easyPct: (s2Normal.easy / 5000 * 100).toFixed(1) + '%',
+    normalPct: (s2Normal.normal / 5000 * 100).toFixed(1) + '%'
+  });
+  if (s2Normal.hard > 0 || Math.abs(s2Normal.normal - 1500) > 250) throw new Error('Stage 2 normal distribution out of range');
+
+  // Stage 2 Boss: 40% easy, 50% normal, 10% hard
+  const s2Boss = sampleDifficulties(new CombatManager(4, 'stage2'), true, 5000);
+  console.log('Stage 2 Boss (target: 40% easy, 50% normal, 10% hard):', {
+    easyPct: (s2Boss.easy / 5000 * 100).toFixed(1) + '%',
+    normalPct: (s2Boss.normal / 5000 * 100).toFixed(1) + '%',
+    hardPct: (s2Boss.hard / 5000 * 100).toFixed(1) + '%'
+  });
+  if (Math.abs(s2Boss.easy - 2000) > 250 || Math.abs(s2Boss.normal - 2500) > 250 || Math.abs(s2Boss.hard - 500) > 150) {
+    throw new Error('Stage 2 boss distribution out of range');
   }
+
+  // Stage 3 Normal: 60:40:10 ratio (54.5% easy, 36.4% normal, 9.1% hard)
+  const s3Normal = sampleDifficulties(new CombatManager(5, 'stage3'), false, 5500);
+  console.log('Stage 3 Normal (target: 60:40:10 weight):', {
+    easyPct: (s3Normal.easy / 5500 * 100).toFixed(1) + '%',
+    normalPct: (s3Normal.normal / 5500 * 100).toFixed(1) + '%',
+    hardPct: (s3Normal.hard / 5500 * 100).toFixed(1) + '%'
+  });
+
+  // Stage 3 Boss: 90% normal, 10% hard
+  const s3Boss = sampleDifficulties(new CombatManager(6, 'stage3'), true, 5000);
+  console.log('Stage 3 Boss (target: 90% normal, 10% hard):', {
+    normalPct: (s3Boss.normal / 5000 * 100).toFixed(1) + '%',
+    hardPct: (s3Boss.hard / 5000 * 100).toFixed(1) + '%'
+  });
+  if (s3Boss.easy > 0 || Math.abs(s3Boss.hard - 500) > 150) {
+    throw new Error('Stage 3 boss distribution out of range');
+  }
+
+  console.log('\n=== ALL TESTS PASSED SUCCESSFULLY! ===\n');
 }
 
 runTests();

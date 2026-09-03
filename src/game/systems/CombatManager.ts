@@ -27,7 +27,6 @@ export class CombatManager {
   private timerInterval: ReturnType<typeof setInterval> | null = null;
   private timerStartDelay: ReturnType<typeof setTimeout> | null = null;
   private bossQuestionCount: number = 0;
-  private bossDifficultyPlan: Difficulty[] = [];
   private correctAnswers = 0;
   private wrongAnswers = 0;
   private bestStreak = 0;
@@ -63,9 +62,6 @@ export class CombatManager {
     this.state.isInputDisabled = false;
     this.state.correctAnswerWas = null;
     this.state.isBoss = encounter.monsterId === 'king_slime' || encounter.monsterId === 'void_stag' || encounter.monsterId === 'lord_zero';
-    this.bossDifficultyPlan = this.state.isBoss && this.topic === 'stage3'
-      ? this.createStage3BossPlan(encounter.maxHp)
-      : [];
     this.state.isTimeUp = false;
     this.state.timeRemaining = null;
     this.state.maxTime = null;
@@ -163,27 +159,46 @@ export class CombatManager {
     EventBus.emit(EVENTS.SHOW_GAME_OVER);
   }
 
+  private determineDifficulty(): Difficulty {
+    if (this.topic === 'stage2') {
+      if (this.state.isBoss) {
+        // บอสระดับโอกาสสุ่มง่าย 40% ปานกลาง 50% ยาก 10%
+        const r = Math.random();
+        if (r < 0.4) return 'easy';
+        if (r < 0.9) return 'normal';
+        return 'hard';
+      }
+      // ด่าน 2 มอนสเตอร์ทั่วไป: สุ่มออกระดับปานกลาง 30% (ง่าย 70%)
+      return Math.random() < 0.3 ? 'normal' : 'easy';
+    }
+
+    if (this.topic === 'stage3') {
+      if (this.state.isBoss) {
+        // บอส ระดับปานกลาง 90% ยาก 10%
+        return Math.random() < 0.9 ? 'normal' : 'hard';
+      }
+      // ด่าน 3 มอนสเตอร์ทั่วไป: สุ่มออกระดับง่าย 60% ปานกลาง 40% ยาก 10% (ถ่วงน้ำหนัก 60:40:10 รวม 110)
+      const r = Math.random() * 110;
+      if (r < 60) return 'easy';
+      if (r < 100) return 'normal';
+      return 'hard';
+    }
+
+    // ด่านแรก (Stage 1): สุ่มโจทย์ระดับง่าย ทั้งหมด ยกเว้นบอสจะมีโอกาสออกระดับปานกลาง 50%
+    if (this.state.isBoss) {
+      return Math.random() < 0.5 ? 'normal' : 'easy';
+    }
+    return 'easy';
+  }
+
   private generateNextQuestion() {
     if (!this.currentEncounter) return;
     
-    let difficulty = this.currentEncounter.difficulty;
-
-    if (this.state.isBoss && this.topic === 'stage2') {
-      difficulty = 'normal';
+    if (this.state.isBoss) {
       this.bossQuestionCount++;
-    } else if (this.state.isBoss && this.topic === 'stage3') {
-      this.bossQuestionCount++;
-      difficulty = this.bossDifficultyPlan[(this.bossQuestionCount - 1) % this.bossDifficultyPlan.length] ?? 'hard';
-    } else if (this.state.isBoss) {
-      this.bossQuestionCount++;
-      if (this.bossQuestionCount === 1) {
-        difficulty = 'easy';
-      } else if (this.bossQuestionCount === this.state.monsterMaxHp) {
-        difficulty = 'normal';
-      } else {
-        difficulty = Math.random() > 0.5 ? 'easy' : 'normal';
-      }
     }
+
+    const difficulty = this.determineDifficulty();
 
     let newQuestion = QuestionGenerator.generate({
       grade: this.grade,
@@ -243,18 +258,6 @@ export class CombatManager {
     }
   }
 
-  private createStage3BossPlan(questionCount: number): Difficulty[] {
-    const hardCount = Math.floor(questionCount / 2) + 1;
-    const plan: Difficulty[] = [
-      ...Array.from({ length: hardCount }, () => 'hard' as Difficulty),
-      ...Array.from({ length: Math.max(0, questionCount - hardCount) }, () => 'normal' as Difficulty),
-    ];
-    for (let index = plan.length - 1; index > 0; index -= 1) {
-      const swapIndex = Math.floor(Math.random() * (index + 1));
-      [plan[index], plan[swapIndex]] = [plan[swapIndex], plan[index]];
-    }
-    return plan;
-  }
 
   private broadcastState() {
     EventBus.emit(EVENTS.UPDATE_COMBAT_STATE, this.state);

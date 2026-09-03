@@ -1,7 +1,60 @@
-import Phaser from 'phaser';
+interface Listener {
+  fn: Function;
+  context?: any;
+  once?: boolean;
+}
 
-// Simple EventBus using Phaser's EventEmitter
-export const EventBus = new Phaser.Events.EventEmitter();
+class GameEventEmitter {
+  private events = new Map<string, Listener[]>();
+
+  on(event: string, fn: Function, context?: any) {
+    const list = this.events.get(event) ?? [];
+    list.push({ fn, context, once: false });
+    this.events.set(event, list);
+    return this;
+  }
+
+  once(event: string, fn: Function, context?: any) {
+    const list = this.events.get(event) ?? [];
+    list.push({ fn, context, once: true });
+    this.events.set(event, list);
+    return this;
+  }
+
+  off(event: string, fn?: Function, context?: any, _once?: boolean) {
+    if (!fn) {
+      this.events.delete(event);
+      return this;
+    }
+    const list = this.events.get(event);
+    if (list) {
+      const filtered = list.filter(l => {
+        if (l.fn !== fn) return true;
+        if (context !== undefined && l.context !== context) return true;
+        return false;
+      });
+      this.events.set(event, filtered);
+    }
+    return this;
+  }
+
+  emit(event: string, ...args: any[]) {
+    const list = this.events.get(event);
+    if (list && list.length > 0) {
+      const toCall = [...list];
+      for (const listener of toCall) {
+        listener.fn.apply(listener.context, args);
+        if (listener.once) {
+          this.off(event, listener.fn, listener.context);
+        }
+      }
+      return true;
+    }
+    return false;
+  }
+}
+
+export const EventBus = new GameEventEmitter();
 
 export const EVENTS = {
   // From Phaser -> React

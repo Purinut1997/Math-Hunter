@@ -1,5 +1,6 @@
 import { Stage2QuestionBank } from '../data/Stage2QuestionBank.ts';
 import { Stage3QuestionBank } from '../data/Stage3QuestionBank.ts';
+import { MasterQuestionBank } from '../data/MasterQuestionBank.ts';
 
 export type Difficulty = 'easy' | 'normal' | 'hard';
 
@@ -14,6 +15,14 @@ export class QuestionGenerator {
   private static recentQuestions = new Set<string>();
 
   static generate(params: { grade: number, difficulty: Difficulty, topic?: string }): MathQuestion {
+    try {
+      const question = MasterQuestionBank.generate(params.grade, params.difficulty);
+      this.addRecentQuestion(question.id);
+      return question;
+    } catch (e) {
+      console.warn('MasterQuestionBank fallback:', e);
+    }
+
     if (params.topic === 'stage2') {
       const question = Stage2QuestionBank.generate(params.grade, params.difficulty);
       this.addRecentQuestion(question.id);
@@ -410,6 +419,7 @@ export class QuestionGenerator {
   
   public static resetRecentQuestions() {
     this.recentQuestions = new Set<string>();
+    MasterQuestionBank.resetSession();
   }
 
   public static getUsedQuestionCount() {
